@@ -36,7 +36,7 @@ public class LoginController : ControllerBase
                     lastName = user.LastName,
                     description = user.Description,
                     urlAvatar = "",
-                    mail = (string)user.Mail
+                    mail = user.Mail
                 });
             }
         }
@@ -45,7 +45,7 @@ public class LoginController : ControllerBase
         return Unauthorized(new ErrorResponseDTO
         {
             success = false,
-            message = "Invalid mail or password"
+            message = "Invalido mail o contrasña"
         });
     }
 }
