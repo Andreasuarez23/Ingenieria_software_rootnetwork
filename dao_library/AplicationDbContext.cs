@@ -5,11 +5,12 @@ using entities_library.follow;
 using entities_library.login;
 using entities_library.publishing;
 using entities_library.report;
+using Microsoft.EntityFrameworkCore;
 
 public class AplicationDbContext : DbContext
 
 {
-    public APlicationDbcontex(DbContext<AplicationDbContext> options)
+    public AplicationDbContext(DbContext<AplicationDbContext> options)
         : base(options)
     { }
     public DbSet<Comment>? Comments { get; }
@@ -31,4 +32,8 @@ public class AplicationDbContext : DbContext
     public DbSet<Report>? Reports { get; }
 
     public DbSet<ReportPost>? ReportsPost { get; }
+}
+
+public class DbContext<T>
+{
 }
