@@ -1,4 +1,6 @@
 ﻿namespace dao_library;
+
+using System;
 using entities_library.comment;
 using entities_library.file_system;
 using entities_library.follow;
@@ -11,8 +13,14 @@ public class AplicationDbContext : DbContext
 
 {
     public AplicationDbContext(DbContext<AplicationDbContext> options)
-        : base(options)
-    { }
+        : base()
+    {
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+    }
+
     public DbSet<Comment>? Comments { get; }
 
     public DbSet<File>? Files { get; }
