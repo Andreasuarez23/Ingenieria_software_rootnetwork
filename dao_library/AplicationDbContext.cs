@@ -9,11 +9,9 @@ using entities_library.publishing;
 using entities_library.report;
 using Microsoft.EntityFrameworkCore;
 
-public class AplicationDbContext : DbContext
-
-{
-    public AplicationDbContext(DbContext<AplicationDbContext> options)
-        : base()
+public class AplicationDbContext : DbContext{
+    public AplicationDbContext(DbContextOptions<AplicationDbContext> options)
+        : base(options)
     {
         if (options is null)
         {
@@ -37,11 +35,7 @@ public class AplicationDbContext : DbContext
 
     public DbSet<Publishing>? Post { get; }
 
-    public DbSet<Report>? Reports { get; }
+    public DbSet<Report>? Report { get; }
 
-    public DbSet<ReportPost>? ReportsPost { get; }
-}
-
-public class DbContext<T>
-{
+    public DbSet<ReportPost>? ReportPost { get; }
 }
