@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 //DB
 builder.Services.AddDbContext<AplicationDbContext>(options =>
     options.UseMySql(
-        "Server=127.0.0.1;Database=root-network;Uid=admin;Pwd=password;",
+        "Server=localhost;Database=root-network;Uid=admin;Pwd=password;",
         new MySqlServerVersion(
             new Version(8, 0, 21)
         )
