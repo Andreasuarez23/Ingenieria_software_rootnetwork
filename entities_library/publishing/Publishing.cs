@@ -12,7 +12,7 @@ public class Publishing
 
     public DateTime PublishDate { get; set; } // Fecha de publicación 
     
-    public PublishStatus Status { get; set; } // Estado de la publicación 
+    public PublishingStatus Status { get; set; } // Estado de la publicación 
 
     public Publishing(byte[] content1)
     {

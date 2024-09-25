@@ -1,6 +1,6 @@
 namespace entities_library.publishing;
 
-public enum PublishStatus
+public enum PublishingStatus
 {
     Draft,      // Borrador
 

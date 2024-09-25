@@ -33,9 +33,11 @@ public class AplicationDbContext : DbContext{
 
     public DbSet<User>? Users { get; }
 
-    public DbSet<Publishing>? Post { get; }
+    public DbSet<Publishing>? Posts { get; }
 
     public DbSet<Report>? Report { get; }
 
     public DbSet<ReportPost>? ReportPost { get; }
+
+    public DbSet<UserBan>? UserBans { get; set; }
 }
