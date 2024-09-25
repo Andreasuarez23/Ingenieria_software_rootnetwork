@@ -15,23 +15,23 @@ public class DAOEFFactory : IDAOFactory
         this.context = context;
     }
 
-    public IDAOPerson CreateDAOPerson()
+    public IDAOPerson CreateDAOEFPerson()
     {
         return new DAOEFPerson(context);
     }
 
-    public IDAOPublishing CreateDAOPublishing()
+    public IDAOPublishing CreateDAOEFPublishing()
     {
         return new DAOEFPublishing(context);
     }
 
-    public IDAOUser CreateDAOUser()
+    public IDAOUser CreateDAOEFUser()
     {
         return new DAOEFUser(context);
     }
 
-    public IDAOUserBan CreateDAOUserBan()
+    public IDAOUserBan CreateDAOEFUserBan()
     {
-        return new DAOEFUserBan(context);
+        return new DAOEFUserBan (context);
     }
 }

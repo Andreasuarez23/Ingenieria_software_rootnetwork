@@ -23,7 +23,7 @@ public class DAOEFPublishing : IDAOPublishing
         throw new NotImplementedException();
     }
 
-    public Task<Post> GetById(long id)
+    public Task<publishing> GetById(long id)
     {
         throw new NotImplementedException();
     }
