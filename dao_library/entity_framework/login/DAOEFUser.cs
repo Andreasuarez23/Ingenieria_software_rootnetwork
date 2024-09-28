@@ -24,7 +24,7 @@ public class DAOEFUser : IDAOUser
         throw new NotImplementedException();
     }
 
-    public async Task<User?> Get(string userName, string password)
+    public async Task<User> Get(string userName, string password)
     {
         if(userName == null) return null;
         if(context.Users == null) return null;

@@ -9,6 +9,8 @@ using entities_library.publishing;
 using entities_library.report;
 using Microsoft.EntityFrameworkCore;
 
+
+
 public class AplicationDbContext : DbContext{
     public AplicationDbContext(DbContextOptions<AplicationDbContext> options)
         : base(options)

@@ -9,5 +9,6 @@ public interface IDAOFactory
     IDAOPerson CreateDAOEFPerson();
 
     IDAOUserBan CreateDAOEFUserBan();
+    
     IDAOPublishing CreateDAOEFPublishing();
 }

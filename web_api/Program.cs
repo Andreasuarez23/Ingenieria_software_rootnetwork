@@ -21,6 +21,23 @@ builder.Services.AddDbContext<AplicationDbContext>(options =>
     )
 );
 
+//Inyeccion dependencias
+
+builder.Services.AddScoped<IDAOFactory, DAOEFFactory>();
+builder.services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", 
+        policy => 
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
+
+
+
 
 var app = builder.Build();
 

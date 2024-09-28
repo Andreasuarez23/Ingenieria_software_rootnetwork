@@ -4,7 +4,6 @@ using entities_library.publishing;
 namespace dao_library.entity_framework.publishing;
 
 public class DAOEFPublishing : IDAOPublishing
-
 {
     private readonly AplicationDbContext context;
 
@@ -13,22 +12,32 @@ public class DAOEFPublishing : IDAOPublishing
         this.context = context;
     }
 
-    public Task Delete(publishing publishing)
+    public Task Delete(Publishing publishing) 
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<publishing>> GetAll()
+    public Task<IEnumerable<Publishing>> GetAll() 
     {
         throw new NotImplementedException();
     }
 
-    public Task<publishing> GetById(long id)
+    public Task<Publishing> GetById(long id) 
     {
         throw new NotImplementedException();
     }
 
-    public Task Save(pub publishing)
+    public Task Save(Publishing publishing) 
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<IEnumerable<Publishing>> IDAOPublishing.GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<Publishing> IDAOPublishing.GetById(long id)
     {
         throw new NotImplementedException();
     }
