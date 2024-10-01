@@ -29,7 +29,7 @@ builder.Services.AddDbContext<AplicationDbContext>(options =>
 //Inyeccion dependencias
 
 builder.Services.AddScoped<IDAOFactory, DAOEFFactory>();
-builder.services.AddCors(options =>
+builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", 
         policy => 

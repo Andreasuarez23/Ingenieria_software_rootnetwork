@@ -1,9 +1,5 @@
-using dao_library.Interfaces;
 using dao_library.Interfaces.login;
 using entities_library.login;
-using dao_library.Interfaces.publishing;
-using entities_library.publishing;
-using dao_library.entity_framework.publishing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
@@ -46,13 +42,18 @@ public class DAOEFUser : IDAOUser
         int pageSize
     )
     {
-        IQueryable<User> usersQuery = context.Users;
+        IQueryable<User>? usersQuery = context.Users;
+ if(usersQuery == null)
+    {
+        // Si usersQuery es null, lanzar una excepción o manejarlo de otra manera
+        throw new InvalidOperationException("La tabla de usuarios no está disponible.");
+    }
 
-        if(query != null)
-        {
-            usersQuery = usersQuery.Where(
-                p => p.Mail.Contains(query) || p.Name.Contains(query));
-        }
+    if(query != null)
+    {
+        usersQuery = usersQuery.Where(
+            p => p.Mail.Contains(query) || p.Name.Contains(query));
+    }
 
         int totalRecords = await usersQuery.CountAsync();
 
