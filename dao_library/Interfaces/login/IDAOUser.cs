@@ -13,7 +13,7 @@ public interface IDAOUser
     Task<User> GetById(long id);
     Task Save(User user);
     
-    //NO PROGRAMAR
+    //NO PROGRAMED
     Task Delete(User user);
-    Task<User> Get(string userName, string password);
+    Task<User?> Get(string userName, string password);
 }

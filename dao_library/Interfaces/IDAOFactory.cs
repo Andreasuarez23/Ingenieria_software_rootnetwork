@@ -4,11 +4,11 @@ namespace dao_library.Interfaces;
 
 public interface IDAOFactory 
 {
-    IDAOUser CreateDAOEFUser();
+    IDAOUser CreateDAOUser();
 
-    IDAOPerson CreateDAOEFPerson();
+    IDAOPerson CreateDAOPerson();
 
-    IDAOUserBan CreateDAOEFUserBan();
+    IDAOUserBan CreateDAOUserBan();
     
-    IDAOPublishing CreateDAOEFPublishing();
+    IDAOPublishing CreateDAOPublishing();
 }

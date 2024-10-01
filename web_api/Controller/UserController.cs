@@ -102,16 +102,17 @@ public class UserController : ControllerBase
     [HttpGet(Name = "GetAll")]
 
     public async Task<IActionResult>Get(
-        [FromQuery]UserGetAllRequestDTO reqest)
+        [FromQuery]UserGetAllRequestDTO request)
     {
         IDAOUser daoUser = this.daoFactory.CreateDAOUser();
 
         var (users, totalRecords) = await daoUser.GetAll(
-            reqest.query,
-            reqest.page,
-            reqest.pageSize);
+            request.query,
+            request.page,
+            request.pageSize);
 
         return Ok(users); 
     }
 
 }
+

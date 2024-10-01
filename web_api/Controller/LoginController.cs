@@ -26,23 +26,24 @@ public class LoginController : ControllerBase
 
     [HttpPost(Name = "Login")]
 
-    public async Task<IActionResult> Post(LoginRequestDTO LoginRequestDTO)
+    public async Task<IActionResult> Post(LoginRequestDTO loginRequestDTO)
     {
         IDAOUser daoUser = daoFactory.CreateDAOUser();
+        
         User user = await daoUser.Get(
-            LoginRequestDTO.mail,
+            loginRequestDTO.mail,
             loginRequestDTO.password
         );
 
-        if(user != null && 
-            user.IsPassword(LoginRequestDTO.password))
+        if( user != null && 
+            user.IsPassword(loginRequestDTO.password))
         {
             return Ok (new LoginResponseDTO
             {
                 success = true,
                 message = "", 
                 id = user.Id,
-                name = user.name,
+                name = user.Name,
                 lastName = user.LastName,
                 description = user.Description,
                 urlAvatar = "",

@@ -8,6 +8,6 @@ public interface IDAOPerson
     Task<Person> GetById(long id);
     Task Save(Person person);
     
-    //NO PROGRAMAR
+    //NO PROGRAM
     Task Delete(Person person);
 }

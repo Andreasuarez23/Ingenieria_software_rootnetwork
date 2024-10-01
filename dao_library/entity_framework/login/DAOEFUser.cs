@@ -1,5 +1,9 @@
+using dao_library.Interfaces;
 using dao_library.Interfaces.login;
 using entities_library.login;
+using dao_library.Interfaces.publishing;
+using entities_library.publishing;
+using dao_library.entity_framework.publishing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
@@ -24,7 +28,7 @@ public class DAOEFUser : IDAOUser
         throw new NotImplementedException();
     }
 
-    public async Task<User> Get(string userName, string password)
+    public async Task<User?> Get(string userName, string password)
     {
         if(userName == null) return null;
         if(context.Users == null) return null;

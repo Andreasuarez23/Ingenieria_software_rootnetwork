@@ -1,6 +1,4 @@
-﻿namespace dao_library;
-
-using System;
+﻿
 using entities_library.comment;
 using entities_library.file_system;
 using entities_library.follow;
@@ -9,37 +7,32 @@ using entities_library.publishing;
 using entities_library.report;
 using Microsoft.EntityFrameworkCore;
 
+namespace dao_library;
 
 
-public class AplicationDbContext : DbContext{
+public class AplicationDbContext : DbContext
+{
     public AplicationDbContext(DbContextOptions<AplicationDbContext> options)
         : base(options)
-    {
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
-    }
+    {}
 
-    public DbSet<Comment>? Comments { get; }
+    public DbSet<Comment>? Comments { get; set;}
 
-    public DbSet<File>? Files { get; }
+    public DbSet<entities_library.file_system.File>? Files { get; set; }
 
-    public DbSet<FileType>? FileTypes { get; } /*Charlar con el grupo*/
+    public DbSet<Follow>? Follows { get; set;}
 
-    public DbSet<Follow>? Follows { get; }
+    public DbSet<Locked>? Locked { get; set;}
 
-    public DbSet<Locked>? Lockeds { get; }
+    public DbSet<Person>? Persons { get; set;}
 
-    public DbSet<Person>? Persons { get; }
+    public DbSet<User>? Users { get; set;}
 
-    public DbSet<User>? Users { get; }
+    public DbSet<Publishing>? Posts { get; set;}
 
-    public DbSet<Publishing>? Posts { get; }
+    public DbSet<Report>? Report { get; set;}
 
-    public DbSet<Report>? Report { get; }
+    public DbSet<ReportPost>? ReportPost { get; set;}
 
-    public DbSet<ReportPost>? ReportPost { get; }
-
-    public DbSet<UserBan>? UserBans { get; set; }
+    public DbSet<UserBan>? UserBans { get; set;}
 }
