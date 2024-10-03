@@ -1,3 +1,30 @@
 {
-    "workbench.settings.useSplitJSON": true
+    "workbench.settings.useSplitJSON": true,
+    "cSpell.words": [
+        "apellido",
+        "Aplication",
+        "Atributo",
+        "birthdate",
+        "clase",
+        "Configuracion",
+        "contrasña",
+        "correo",
+        "DAOEF",
+        "Datos",
+        "dependencias",
+        "electrónico",
+        "fecha",
+        "IDAO",
+        "Incorrectos",
+        "ingresados",
+        "instante",
+        "Invalido",
+        "Inyeccion",
+        "Legajo",
+        "nacimiento",
+        "Numero",
+        "obligatorio",
+        "PROGRAMAR",
+        "Responset"
+    ]
 }

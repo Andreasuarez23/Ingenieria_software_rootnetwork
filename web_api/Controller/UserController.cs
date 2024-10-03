@@ -1,6 +1,11 @@
+using System.IO.Pipelines;
+using dao_library.Interfaces;
+using dao_library.Interfaces.login;
+using entities_library.login;
 using Microsoft.AspNetCore.Mvc;
 using web_api.dto.common;
 using web_api.dto.login;
+using web_api.helpers;
 using web_api.mock;
 
 namespace web_api.Controllers;
@@ -11,10 +16,14 @@ namespace web_api.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
+    private readonly IDAOFactory daoFactory;
     
-    public UserController(ILogger<UserController> logger)
+    public UserController(
+        ILogger<UserController> logger,
+        IDAOFactory daoFactory)
     {
         _logger = logger;
+        this.daoFactory = daoFactory;
     }
 
     [HttpPost(Name = "CreateUser")]
@@ -25,7 +34,7 @@ public class UserController : ControllerBase
             return BadRequest(new ErrorResponseDTO
             {
                 success = false,
-                message = "Datos ingresados erroneos"
+                message = "Datos ingresados Incorrectos. "
             });
         }
 
@@ -89,4 +98,21 @@ public class UserController : ControllerBase
             mail = userPostRequestDTO.mail
         });
     }
+
+    [HttpGet(Name = "GetAll")]
+
+    public async Task<IActionResult>Get(
+        [FromQuery]UserGetAllRequestDTO request)
+    {
+        IDAOUser daoUser = this.daoFactory.CreateDAOUser();
+
+        var (users, totalRecords) = await daoUser.GetAll(
+            request.query,
+            request.page,
+            request.pageSize);
+
+        return Ok(users); 
+    }
+
 }
+
