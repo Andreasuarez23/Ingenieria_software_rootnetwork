@@ -1,3 +1,7 @@
+using dao_library.Interfaces.comment;
+using entities_library.comment;
+using Microsoft.EntityFrameworkCore;
+
 namespace dao_library.entity_framework.comment;
 
 public class DAOEFComment : IDAOComment

@@ -1,3 +1,7 @@
+using dao_library.Interfaces.file;
+
+using Microsoft.EntityFrameworkCore;
+
 namespace dao_library.entity_framework.file;
 
 public class DAOEFFile : IDAOFile
@@ -24,4 +28,3 @@ public class DAOEFFile : IDAOFile
         throw new NotImplementedException();
     }
 }
-

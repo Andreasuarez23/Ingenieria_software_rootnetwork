@@ -1,12 +1,13 @@
+using entities_library.comment;
+
 namespace dao_library.Interfaces.comment;
 
 public interface IDAOComment
 {
-    {
     Task<IEnumerable<comment>> GetAll();
-    Task Save(comment comment);
-    
+    Task Save(Comment comment);
+        
     //NO PROGRAM
-    Task Delete(comment comment);
-}
+    Task Delete(Comment comment);
+        
 }
