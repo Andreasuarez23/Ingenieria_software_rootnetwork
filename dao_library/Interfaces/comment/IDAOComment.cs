@@ -4,7 +4,7 @@ namespace dao_library.Interfaces.comment;
 
 public interface IDAOComment
 {
-    Task<IEnumerable<comment>> GetAll();
+    Task<IEnumerable<Comment>> GetAll();
     Task Save(Comment comment);
         
     //NO PROGRAM

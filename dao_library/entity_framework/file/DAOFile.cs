@@ -1,5 +1,5 @@
 using dao_library.Interfaces.file;
-
+using entities_library.file_system;
 using Microsoft.EntityFrameworkCore;
 
 namespace dao_library.entity_framework.file;
@@ -13,17 +13,17 @@ public class DAOEFFile : IDAOFile
         this.context = context;
     }
 
-    public Task Save (File file)
+    public Task Save (AppFile file)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<File>> GetAll()
+    public Task<IEnumerable<AppFile>> GetAll()
     {
         throw new NotImplementedException();
     }
 
-    public Task Delete(File file)
+    public Task Delete(AppFile file)
     {
         throw new NotImplementedException();
     }

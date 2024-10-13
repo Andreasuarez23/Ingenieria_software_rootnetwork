@@ -3,6 +3,11 @@ using dao_library.Interfaces.login;
 using dao_library.entity_framework.login;
 using dao_library.Interfaces.publishing;
 using dao_library.entity_framework.publishing;
+using dao_library.Interfaces.file;
+using dao_library.entity_framework.file;
+using dao_library.Interfaces.comment;
+using dao_library.entity_framework.comment;
+
 
 namespace dao_library.entity_framework;
 
@@ -41,6 +46,6 @@ public class DAOEFFactory : IDAOFactory
     }
     public IDAOFile CreateDAOFile()
     {
-        return new DAOFile(context);
+        return new DAOEFFile(context);
     }
 }

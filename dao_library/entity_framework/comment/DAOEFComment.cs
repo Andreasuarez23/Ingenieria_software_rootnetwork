@@ -9,10 +9,11 @@ public class DAOEFComment : IDAOComment
 {    
     private readonly AplicationDbContext context;
 
-    public IDAOComment(AplicationDbContext context)
+    public DAOEFComment(AplicationDbContext context)
     {
         this.context = context; 
     }
+
     public Task<IEnumerable<Comment>> GetAll()
     {
         throw new NotImplementedException();
