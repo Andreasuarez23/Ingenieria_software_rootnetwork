@@ -1,6 +1,7 @@
 using dao_library;
 using dao_library.entity_framework;
-using dao_library.Interfaces; 
+using dao_library.Interfaces;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using web_api.helpers;
 
@@ -45,6 +46,8 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

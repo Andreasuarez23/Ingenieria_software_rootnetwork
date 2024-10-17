@@ -30,12 +30,12 @@ public class LoginController : ControllerBase
     {
         IDAOUser daoUser = daoFactory.CreateDAOUser();
 
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-        User user = await daoUser.Get(
+
+        var user = await daoUser.Get(
             loginRequestDTO.mail,
             loginRequestDTO.password
         );
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
 
         if ( user != null && 
             user.IsPassword(loginRequestDTO.password))
