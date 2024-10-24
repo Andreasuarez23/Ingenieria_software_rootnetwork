@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using web_api.dto.Comment;
 using dao_library.Interfaces;
 using dao_library.Interfaces.comment;
 using dao_library.entity_framework.comment;
+using entities_library.comment;
+
 
 namespace web_api.Controllers
 {
@@ -19,5 +22,10 @@ namespace web_api.Controllers
             _logger = logger;
             _daoFactory = daoFactory;
         }
+
+        [HttpPost]
+        
+
+        
     }
 }

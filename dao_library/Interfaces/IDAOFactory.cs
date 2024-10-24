@@ -1,3 +1,4 @@
+using dao_library.Interfaces.comment;
 using dao_library.Interfaces.login;
 using dao_library.Interfaces.publishing;
 namespace dao_library.Interfaces;
@@ -11,4 +12,5 @@ public interface IDAOFactory
     IDAOUserBan CreateDAOUserBan();
     
     IDAOPublishing CreateDAOPublishing();
+    IDAOComment CreateDAOComment();
 }

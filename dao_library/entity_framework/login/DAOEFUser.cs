@@ -42,14 +42,8 @@ public class DAOEFUser : IDAOUser
         int pageSize
     )
     {
-        IQueryable<User>? usersQuery = context.Users;
- if(usersQuery == null)
-    {
-        // Si usersQuery es null, lanzar una excepción o manejarlo de otra manera
-        throw new InvalidOperationException("La tabla de usuarios no está disponible.");
-    }
-
-    if(query != null)
+        IQueryable<User>? usersQuery = context.Users ?? throw new InvalidOperationException("La tabla de usuarios no está disponible.");
+        if (query != null)
     {
         usersQuery = usersQuery.Where(
             p => p.Mail.Contains(query) || p.Name.Contains(query));
