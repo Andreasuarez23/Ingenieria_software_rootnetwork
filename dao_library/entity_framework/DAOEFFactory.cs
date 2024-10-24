@@ -48,4 +48,9 @@ public class DAOEFFactory : IDAOFactory
     {
         return new DAOEFFile(context);
     }
+
+    public IDAOComment CreateDAOComment()
+    {
+        return new DAOEFComment(context);
+    }
 }
