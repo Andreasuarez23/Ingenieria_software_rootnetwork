@@ -1,11 +1,13 @@
 using entities_library.login;
 
-namespace entities_library.reactions;
+using entities_library.publishing.reactions;
 
-public class Reaction {
-    public long Id {get; set;}
-
-    public required User User  { get; set;}
-
-    public required ReactionType ReactionType {get; set;}
+namespace entities_library.publishing.reactions
+{
+    public class Reaction
+    {
+        public long Id { get; set; }
+        public long UserId { get; set; }
+        public ReactionType.Type ReactionType { get; set; } 
+    }
 }

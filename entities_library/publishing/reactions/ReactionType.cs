@@ -1,7 +1,14 @@
-namespace entities_library.reactions;
-public class ReactionType
+namespace entities_library.publishing.reactions
 {
-    public long Id { get; set; }
-
-    public required string Name { get; set; }
+    public class ReactionType
+    {
+        public long Id  { get; set; } 
+        
+        public enum Type
+        {
+            like,
+            love
+        }
+    }
 }
+
