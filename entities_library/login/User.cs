@@ -8,7 +8,7 @@ public class User : Person
 
     public UserStatus UserStatus { get; set; } = UserStatus.Active;
 
-    public entities_library.file_system.File? File { get; set; }
+    public entities_library.file_system.AppFile? File { get; set; }
 
     public string Description { get; set; } = "";
     #endregion

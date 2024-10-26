@@ -18,7 +18,7 @@ public class AplicationDbContext : DbContext
 
     public DbSet<Comment>? Comments { get; set;}
 
-    public DbSet<entities_library.file_system.File>? Files { get; set; }
+    public DbSet<entities_library.file_system.AppFile>? Files { get; set; }
 
     public DbSet<Follow>? Follows { get; set;}
 
