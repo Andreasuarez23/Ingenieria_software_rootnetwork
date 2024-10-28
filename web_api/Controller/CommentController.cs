@@ -19,9 +19,27 @@ namespace web_api.Controllers
             _daoFactory = daoFactory;
         }
 
-        
-        
 
-        
+
+        //obtenet comentarios por publicacion 
+        [HttpGet("Post/{postId}")]
+        public IActionResult GetAll(int postId)
+        {
+            try
+            {
+                var commentDao = _daoFactory?.CreateDAOComment();
+                var comments = commentDao?.GetAll(postId);
+                return Ok(comments);
+            }
+
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Error obteniendo comentarios para la publicación {PostId}", postId);
+                return StatusCode(500, "Error interno del servidor");
+            }
+        }
     }
-}
+}   
+
+
+
