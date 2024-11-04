@@ -43,6 +43,11 @@ namespace dao_library.entity_framework.comment
         return (comments, totalRecords);
     }
 
+        public object GetAll(int postId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Comment? GetCommentsById(int commentId)
         {
             throw new NotImplementedException();
@@ -53,7 +58,7 @@ namespace dao_library.entity_framework.comment
             throw new NotImplementedException();
         }
 
-        // Otros métodos...
+        
     }
 
 }
