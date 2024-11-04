@@ -1,58 +1,80 @@
-using dao_library.Interfaces.comment;
 using entities_library.comment;
+using dao_library.Interfaces.comment;
+
 using Microsoft.EntityFrameworkCore;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace dao_library.entity_framework.comment;
 
-public class DAOEFComment : IDAOComment
-
-{    
-    private readonly AplicationDbContext context;
+namespace dao_library.entity_framework.comment
+{
+    public class DAOEFComment : IDAOComment
+{
+    private readonly AplicationDbContext _context;
 
     public DAOEFComment(AplicationDbContext context)
     {
-        this.context = context; 
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<(IEnumerable<Comment>,int )GetAll(
-        string?query
-    )
-    { 
-        IQueryable<Comment>? commentsQuery = context.Comments ?? throw new InvalidOperationException("La tabla de usuarios no está disponible.");
-        if (query != null) 
+        public Comment Create(Comment comment)
         {
-            commentsQuery = commentsQuery.Where(
-                p => p.Text.Contains(query)); 
-            
+            throw new NotImplementedException();
         }
 
-            int totalRecords = await commentsQuery.CountAsync();
+        public bool Delete(int commentId)
+        {
+            throw new NotImplementedException();
+        }
 
-            var comment = await commentsQuery
+        public async Task<(IEnumerable<Comment>, int)> GetAll(int postId, int page, int pageSize)
+    {
+        if (_context.Comments == null)
+        {
+            throw new InvalidOperationException("Comments no está definido en el contexto.");
+        }
+
+        var commentsQuery = _context.Comments.Where(c => c.PostId == postId);
+        int totalRecords = await commentsQuery.CountAsync();
+
+        var comments = await commentsQuery
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
 
-        return (comment, totalRecords);
+        return (comments, totalRecords);
     }
 
+        public Comment? GetCommentsById(int commentId)
+        {
+            throw new NotImplementedException();
+        }
 
-    }
+        public Comment? Update(int commentId, Comment updatedComment)
+        {
+            throw new NotImplementedException();
+        }
 
-
-
-
-    
-    
-        
-    public Task Save(Comment comment)
-    {
-        throw new NotImplementedException();
-    }
-    public Task Delete(Comment comment)
-    {
-        throw new NotImplementedException();
+        // Otros métodos...
     }
 
 }
+
+
+
+
+
+
+
+    
+
+    
+
+
+
+
+
+
+
+
+
+    
+    

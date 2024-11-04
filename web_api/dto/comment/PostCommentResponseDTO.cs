@@ -1,8 +1,12 @@
 using entities_library.login;
+using web_api.dto.common;
+using web_api.dto.login;
 
-namespace entities_library.comment;
-public class Comment{
 
+namespace web_api.dto.comment;
+
+public class PostCommentResponseDTO : ResponsetDTO
+{
     public long Id{get; set;}
 
     public required string Text {get; set;}
@@ -10,5 +14,4 @@ public class Comment{
     public required User User  {get; set;}
 
     public DateTime Date {get; set;}
-    public int PostId { get; set; }
 }
