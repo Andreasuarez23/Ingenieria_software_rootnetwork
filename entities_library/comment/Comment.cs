@@ -7,7 +7,7 @@ public class Comment{
 
     public required string Text {get; set;}
 
-    public required User User  {get; set;}
+    //public required User User  {get; set;}
 
     public DateTime Date {get; set;}
     
