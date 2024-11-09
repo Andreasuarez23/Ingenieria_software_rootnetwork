@@ -1,31 +1,85 @@
-using dao_library.Interfaces.comment;
 using entities_library.comment;
+using dao_library.Interfaces.comment;
+
 using Microsoft.EntityFrameworkCore;
 
-namespace dao_library.entity_framework.comment;
 
-public class DAOEFComment : IDAOComment
-
-{    
-    private readonly AplicationDbContext context;
+namespace dao_library.entity_framework.comment
+{
+    public class DAOEFComment : IDAOComment
+{
+    private readonly AplicationDbContext _context;
 
     public DAOEFComment(AplicationDbContext context)
     {
-        this.context = context; 
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public Task<IEnumerable<Comment>> GetAll()
+        public Comment Create(Comment comment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Delete(int commentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<(IEnumerable<Comment>, int)> GetAll(int postId, int page, int pageSize)
     {
-        throw new NotImplementedException();
+        if (_context.Comments == null)
+        {
+            throw new InvalidOperationException("Comments no está definido en el contexto.");
+        }
+
+        var commentsQuery = _context.Comments.Where(c => c.PostId == postId);
+        int totalRecords = await commentsQuery.CountAsync();
+
+        var comments = await commentsQuery
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (comments, totalRecords);
     }
 
-    public Task Save(Comment comment)
-    {
-        throw new NotImplementedException();
-    }
-    public Task Delete(Comment comment)
-    {
-        throw new NotImplementedException();
+        public object GetAll(int postId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Comment? GetCommentsById(int commentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Comment? Update(int commentId, Comment updatedComment)
+        {
+            throw new NotImplementedException();
+        }
+
+        
     }
 
 }
+
+
+
+
+
+
+
+    
+
+    
+
+
+
+
+
+
+
+
+
+    
+    
