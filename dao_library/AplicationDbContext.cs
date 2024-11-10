@@ -35,4 +35,6 @@ public class AplicationDbContext : DbContext
     public DbSet<ReportPost>? ReportPost { get; set;}
 
     public DbSet<UserBan>? UserBans { get; set;}
+
+    public DbSet<PublishingUser>? PublishingUsers { get; set;}
 }

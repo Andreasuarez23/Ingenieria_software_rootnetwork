@@ -13,4 +13,6 @@ public interface IDAOFactory
     
     IDAOPublishing CreateDAOPublishing();
     IDAOComment CreateDAOComment();
+
+    IDAOPublishingUser CreateDAOPublishingUser();
 }
