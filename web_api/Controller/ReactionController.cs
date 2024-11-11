@@ -3,6 +3,8 @@ using dao_library.Interfaces;
 using entities_library.publishing.reactions;
 using System.Threading.Tasks;
 using dao_library;
+using entities_library.publishing;
+using Microsoft.EntityFrameworkCore;
 
 namespace web_api.Controller
 {
@@ -11,18 +13,21 @@ namespace web_api.Controller
     public class ReactionController : ControllerBase
 
     {
-
         private readonly ILogger<ReactionController>? _logger;
-        private readonly IDAOFactory? _daoFactory;
+
+        private readonly IDAOFactory?_daoFactory;
 
 
-                public ReactionController(
+        public ReactionController(
             ILogger<ReactionController> logger,
             IDAOFactory daoFactory)
         {
             _logger = logger;
             _daoFactory = daoFactory;
         }
+        
+
+
 
 
 
@@ -30,13 +35,23 @@ namespace web_api.Controller
         [HttpPost]
         public async Task<ActionResult<ReactionResponseDTO>> AddReaction(ReactionRequestDTO reactionRequest)
         {
-            var post = await _context.Posts.FindAsync(reactionRequest.PostId);
-            if (post == null)
+            var post = await 
+                this._daoFactory
+                    .CreateDAOPublishing()
+                    .GetById(reactionRequest.PostId);
+
+            if (post == null )
             {
                 return NotFound("Post not found");
             }
+            
 
-            var user = await _context.Users.FindAsync(reactionRequest.UserId);
+
+            var user = await 
+                this._daoFactory
+                .CreateDAOUser()
+                .GetById(reactionRequest.UserId);
+            
             if (user == null)
             {
                 return NotFound("User not found");
@@ -44,15 +59,13 @@ namespace web_api.Controller
 
             var reaction = new Reaction
             {
-                UserId = reactionRequest.UserId,
-                PostId = reactionRequest.PostId,
-                Type = reactionRequest.Type,
+        
                 User = user,
-                Post = post
+                Publishing = post
             };
 
-            _context.Reactions.Add(reaction);
-            await _context.SaveChangesAsync();
+            context.Reactions.Add(reaction);
+            await context.SaveChangesAsync();
 
             var reactionResponse = new ReactionResponseDTO
             {
@@ -69,7 +82,7 @@ namespace web_api.Controller
         [HttpGet("{id}")]
         public async Task<ActionResult<ReactionResponseDTO>> GetReaction(long id)
         {
-            var reaction = await _context.Reactions.FindAsync(id);
+            var reaction = await context.Reactions.FindAsync(id);
             if (reaction == null)
             {
                 return NotFound();
@@ -90,7 +103,7 @@ namespace web_api.Controller
         [HttpGet("post/{postId}")]
         public async Task<ActionResult<IEnumerable<ReactionResponseDTO>>> GetReactionsByPost(long postId)
         {
-            var reactions = await _context.Reactions
+            var reactions = await context.Reactions
                                           .Where(r => r.PostId == postId)
                                           .Select(r => new ReactionResponseDTO
                                           {
@@ -107,14 +120,14 @@ namespace web_api.Controller
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReaction(long id)
         {
-            var reaction = await _context.Reactions.FindAsync(id);
+            var reaction = await context.Reactions.FindAsync(id);
             if (reaction == null)
             {
                 return NotFound();
             }
 
-            _context.Reactions.Remove(reaction);
-            await _context.SaveChangesAsync();
+            context.Reactions.Remove(reaction);
+            await context.SaveChangesAsync();
 
             return NoContent();
         }
