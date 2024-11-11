@@ -2,19 +2,29 @@ using Microsoft.AspNetCore.Mvc;
 using dao_library.Interfaces;
 using entities_library.publishing.reactions;
 using System.Threading.Tasks;
+using dao_library;
 
 namespace web_api.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ReactionController : ControllerBase
-    {
-        private readonly YourDbContext _context;
 
-        public ReactionController(YourDbContext context)
+    {
+
+        private readonly ILogger<ReactionController>? _logger;
+        private readonly IDAOFactory? _daoFactory;
+
+
+                public ReactionController(
+            ILogger<ReactionController> logger,
+            IDAOFactory daoFactory)
         {
-            _context = context;
+            _logger = logger;
+            _daoFactory = daoFactory;
         }
+
+
 
         // Endpoint para agregar una nueva reacción
         [HttpPost]

@@ -3,8 +3,9 @@ using entity_framework.publishing;
 using entities_library.publishing;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using dao_library.Interfaces.publishing;
 
-namespace api_library.Controllers
+namespace web_api.Controllers
 {   
     [ApiController]
     [Route("[controller]")]
@@ -16,7 +17,7 @@ namespace api_library.Controllers
         // Inyección de dependencias para DAO
         public PublishingUserController(IDAOPublishingUser daoPublishingUser)
         {
-            _daoPublishingUser = daoPublishingUser;
+            _daoPublishingUser = daoPublishingUser ?? throw new ArgumentNullException(nameof(daoPublishingUser));
         }
 
         [HttpGet]
@@ -65,4 +66,5 @@ namespace api_library.Controllers
         }
 
         
+}
 }
