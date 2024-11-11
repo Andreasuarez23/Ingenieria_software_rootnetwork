@@ -54,6 +54,11 @@ public class DAOEFFactory : IDAOFactory
         return new DAOEFComment(context);
     }
 
+    public IDAOPublishingUser CreateDAOPublishingUser()
+    {
+        return new DAOEFPublishingUser(context);
+    }
+
 
 
 

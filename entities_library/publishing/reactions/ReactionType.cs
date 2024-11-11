@@ -6,7 +6,6 @@ namespace entities_library.publishing.reactions
         
         public enum Type
         {
-            like,
             love
         }
     }
