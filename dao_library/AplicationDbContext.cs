@@ -4,6 +4,7 @@ using entities_library.file_system;
 using entities_library.follow;
 using entities_library.login;
 using entities_library.publishing;
+using entities_library.publishing.reactions;
 using entities_library.report;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,6 +34,8 @@ public class AplicationDbContext : DbContext
     public DbSet<Report>? Report { get; set;}
 
     public DbSet<ReportPost>? ReportPost { get; set;}
+
+    public DbSet<Reaction> ? Reactions {get ; set;}
 
     public DbSet<UserBan>? UserBans { get; set;}
 
