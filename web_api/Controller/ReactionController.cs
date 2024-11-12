@@ -9,13 +9,20 @@ using Microsoft.EntityFrameworkCore;
 namespace web_api.Controller
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class ReactionController : ControllerBase
 
     {
         private readonly ILogger<ReactionController>? _logger;
 
         private readonly IDAOFactory?_daoFactory;
+
+        private readonly AplicationDbContext _context; // Asegúrate de que el contexto está declarado
+
+        public ReactionController(AplicationDbContext context) // Inyección de dependencia
+        {
+            _context = context;
+        }
 
 
         public ReactionController(
@@ -64,8 +71,8 @@ namespace web_api.Controller
                 Publishing = post
             };
 
-            context.Reactions.Add(reaction);
-            await context.SaveChangesAsync();
+            _context.Reactions.Add(reaction);
+            await _context.SaveChangesAsync();
 
             var reactionResponse = new ReactionResponseDTO
             {
@@ -82,7 +89,7 @@ namespace web_api.Controller
         [HttpGet("{id}")]
         public async Task<ActionResult<ReactionResponseDTO>> GetReaction(long id)
         {
-            var reaction = await context.Reactions.FindAsync(id);
+            var reaction = await _context.Reactions.FindAsync(id);
             if (reaction == null)
             {
                 return NotFound();
@@ -103,7 +110,7 @@ namespace web_api.Controller
         [HttpGet("post/{postId}")]
         public async Task<ActionResult<IEnumerable<ReactionResponseDTO>>> GetReactionsByPost(long postId)
         {
-            var reactions = await context.Reactions
+            var reactions = await _context.Reactions
                                           .Where(r => r.PostId == postId)
                                           .Select(r => new ReactionResponseDTO
                                           {
@@ -120,14 +127,14 @@ namespace web_api.Controller
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReaction(long id)
         {
-            var reaction = await context.Reactions.FindAsync(id);
+            var reaction = await _context.Reactions.FindAsync(id);
             if (reaction == null)
             {
                 return NotFound();
             }
 
-            context.Reactions.Remove(reaction);
-            await context.SaveChangesAsync();
+            _context.Reactions.Remove(reaction);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
