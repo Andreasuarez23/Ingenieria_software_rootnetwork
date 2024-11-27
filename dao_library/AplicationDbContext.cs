@@ -35,9 +35,10 @@ public class AplicationDbContext : DbContext
 
     public DbSet<ReportPost>? ReportPost { get; set;}
 
-    public DbSet<Reaction> ? Reactions {get ; set;}
+    public DbSet<Reaction>? Reactions {get ; set;}
 
     public DbSet<UserBan>? UserBans { get; set;}
 
-    public DbSet<PublishingUser>? PublishingUsers { get; set;}
+    public DbSet<PublishingUser> PublishingUsers { get; set;}
+
 }

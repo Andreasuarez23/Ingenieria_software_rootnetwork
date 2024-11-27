@@ -1,18 +1,24 @@
+using dao_library.Interfaces.reaction;
 using dao_library.Interfaces.comment;
 using dao_library.Interfaces.login;
 using dao_library.Interfaces.publishing;
-namespace dao_library.Interfaces;
 
-public interface IDAOFactory 
+namespace dao_library.Interfaces
 {
-    IDAOUser CreateDAOUser();
+    public interface IDAOFactory 
+    {
+        IDAOUser CreateDAOUser();
 
-    IDAOPerson CreateDAOPerson();
+        IDAOPerson CreateDAOPerson();
 
-    IDAOUserBan CreateDAOUserBan();
-    
-    IDAOPublishing CreateDAOPublishing();
-    IDAOComment CreateDAOComment();
+        IDAOUserBan CreateDAOUserBan();
+        
+        IDAOPublishing CreateDAOPublishing();
+        
+        IDAOComment CreateDAOComment();
 
-    IDAOPublishingUser CreateDAOPublishingUser();
+        IDAOPublishingUser CreateDAOPublishingUser();
+
+        IDAOReaction CreateDAOReaction();
+    }
 }

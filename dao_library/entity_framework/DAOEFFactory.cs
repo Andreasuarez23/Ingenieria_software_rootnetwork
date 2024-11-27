@@ -1,4 +1,6 @@
 using dao_library.Interfaces;
+using dao_library.Interfaces.reaction;
+using dao_library.entity_framework.reaction;
 using dao_library.Interfaces.login;
 using dao_library.entity_framework.login;
 using dao_library.Interfaces.publishing;
@@ -60,7 +62,10 @@ public class DAOEFFactory : IDAOFactory
         return new DAOEFPublishingUser(context);
     }
 
-
+    public IDAOReaction CreateDAOReaction()
+    {
+        return new DAOEFReaction(context);
+    }
 
 
 }

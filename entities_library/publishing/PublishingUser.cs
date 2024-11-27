@@ -2,6 +2,7 @@ namespace entities_library.publishing;
 
 public class PublishingUser
 {
+    public int Id { get; set; }
     public string? UserName { get; set; } // Nombre del usuario (puede ser opcional, útil para mostrar en la vista)
     
     public string? Description { get; set; } // Descripción de la publicación
