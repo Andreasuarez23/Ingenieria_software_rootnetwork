@@ -42,11 +42,7 @@ public class DAOEFFactory : IDAOFactory
     {
         return new DAOEFUserBan (context);
     }
-    public IDAOComment CreateIDAOComment()
-    {
-        return new DAOEFComment (context);
-
-    }
+   
     public IDAOFile CreateDAOFile()
     {
         return new DAOEFFile(context);

@@ -20,5 +20,5 @@ namespace dao_library.Interfaces
         IDAOPublishingUser CreateDAOPublishingUser();
 
         IDAOReaction CreateDAOReaction();
-    }
+    } 
 }

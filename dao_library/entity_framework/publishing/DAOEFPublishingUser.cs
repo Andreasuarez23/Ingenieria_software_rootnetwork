@@ -15,12 +15,24 @@ public class DAOEFPublishingUser : IDAOPublishingUser
         this.context = context;
     }
 
-    async Task<IEnumerable<PublishingUser>> IDAOPublishingUser.GetAll()
+    public async Task<(List<PublishingUser>, int)> GetAll(int pageNumber, int pageSize)
     {
-        return await context.Set<PublishingUser>().ToListAsync();
+        if (pageNumber <= 0 || pageSize <= 0)
+            throw new ArgumentException("El número de página y el tamaño de página deben ser mayores que 0.");
+
+        // Contar el total de elementos
+        var totalRecords = await context.Set<PublishingUser>().CountAsync();
+
+        // Obtener la lista paginada
+        var data = await context.Set<PublishingUser>()
+            .OrderByDescending(p => p.PublishDate) // Ordenar por fecha de publicación
+            .Skip((pageNumber - 1) * pageSize) // Saltar los registros de páginas anteriores
+            .Take(pageSize) // Tomar el número de registros necesarios
+            .ToListAsync();
+
+        return (data, totalRecords);
     }
 
-    //Task<Publishing> IDAOPublishing.GetById(long id)
     async Task<PublishingUser?> IDAOPublishingUser.GetById(long id)
     {
         var user = await context.Set<PublishingUser>().FindAsync(id);

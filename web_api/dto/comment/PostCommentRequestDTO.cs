@@ -1,4 +1,5 @@
-namespace web_api.DTOs
+using web_api.dto.common;
+namespace web_api.dto
 {
     public class PostCommentRequestDTO
     {
