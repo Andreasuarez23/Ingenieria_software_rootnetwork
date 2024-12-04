@@ -8,7 +8,7 @@ public class PublishingUserRequestDTO : RequestDTO
     
     public string? Description { get; set; } = "";
     
-    public required byte[] Content { get; set; } 
+     public string? ImageUrl { get; set; } // Campo para la URL de la imagen  
     
     public DateTime PublishDate { get; set; } // Fecha de publicación
     
