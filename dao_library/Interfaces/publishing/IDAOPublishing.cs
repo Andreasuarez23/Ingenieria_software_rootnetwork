@@ -7,6 +7,8 @@ public interface IDAOPublishing
     Task<Publishing> GetById(long id);
     Task Save(Publishing publishing);
     
+    Task AddPost(Publishing publishing);
+
     //NO PROGRAMAR
     Task Delete(Publishing publishing);
 }

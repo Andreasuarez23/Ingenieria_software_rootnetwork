@@ -12,15 +12,23 @@ public class DAOEFPublishing : IDAOPublishing
         this.context = context;
     }
 
+    public async Task AddPost(Publishing publishing)
+    {
+        await context.Set<Publishing>().AddAsync(publishing);
+        await context.SaveChangesAsync();
+    }
+
     public Task Delete(Publishing publishing) 
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Publishing>> GetAll() 
+    public Task<IEnumerable<Publishing>> GetAll()
     {
         throw new NotImplementedException();
     }
+
+    //public async Task<IEnumerable<Publishing>> GetAll() => await context.Set<Publishing>();
 
     public Task<Publishing> GetById(long id) 
     {
@@ -28,11 +36,6 @@ public class DAOEFPublishing : IDAOPublishing
     }
 
     public Task Save(Publishing publishing) 
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<IEnumerable<Publishing>> IDAOPublishing.GetAll()
     {
         throw new NotImplementedException();
     }

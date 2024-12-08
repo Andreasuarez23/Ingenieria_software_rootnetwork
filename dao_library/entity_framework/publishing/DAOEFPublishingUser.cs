@@ -25,7 +25,7 @@ public class DAOEFPublishingUser : IDAOPublishingUser
 
         // Obtener la lista paginada
         var data = await context.Set<PublishingUser>()
-            .OrderByDescending(p => p.PublishDate) // Ordenar por fecha de publicación
+            //.OrderByDescending(p => p.PublishDate) // Ordenar por fecha de publicación
             .Skip((pageNumber - 1) * pageSize) // Saltar los registros de páginas anteriores
             .Take(pageSize) // Tomar el número de registros necesarios
             .ToListAsync();

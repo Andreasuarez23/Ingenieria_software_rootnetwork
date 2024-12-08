@@ -1,22 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using entities_library.publishing;
-using dao_library.Interfaces.publishing;
 using web_api.dto.publishingUser;
-using System;
-using System.Threading.Tasks;
 using dao_library.Interfaces;
 
 namespace web_api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PublishingUserController : ControllerBase
+    public class PublishingController : ControllerBase
     {
-        private readonly ILogger<PublishingUserController> _logger;
+        private readonly ILogger<PublishingController> _logger;
         private readonly IDAOFactory _daoFactory;
 
-        public PublishingUserController(ILogger<PublishingUserController> logger, IDAOFactory daoFactory)
+        public PublishingController(ILogger<PublishingController> logger, IDAOFactory daoFactory)
         {
             _logger = logger;
             _daoFactory = daoFactory;
@@ -26,7 +22,7 @@ namespace web_api.Controllers
         public async Task<IActionResult> CreatePost([FromBody] PublishingUserRequestDTO publishingUserRequestDTO)
         {
             // Validar campos obligatorios
-            if (string.IsNullOrEmpty(publishingUserRequestDTO.UserName))
+            if (string.IsNullOrEmpty(publishingUserRequestDTO.Text))
                 return BadRequest("El nombre de usuario es obligatorio.");
 
             if (string.IsNullOrEmpty(publishingUserRequestDTO.ImageUrl) || 
@@ -36,26 +32,28 @@ namespace web_api.Controllers
             // Crear objeto del modelo de base de datos
             var post = new PublishingUser
             {
-                UserName = publishingUserRequestDTO.UserName,
-                Description = publishingUserRequestDTO.Description,
+                //UserName = publishingUserRequestDTO.UserName,
+                Text = publishingUserRequestDTO.Text,
                 ImageUrl = publishingUserRequestDTO.ImageUrl,
-                PublishDate = DateTime.UtcNow // Usamos la fecha actual como la de publicación
+                //PublishDate = DateTime.UtcNow // Usamos la fecha actual como la de publicación
             };
 
             try
             {
                 // Guardar el post en la base de datos usando el DAO
-                var publishingUserDAO = _daoFactory.CreateDAOPublishingUser();
+                var publishingUserDAO = _daoFactory.CreateDAOPublishing();
                 await publishingUserDAO.Save(post);
 
                 // Crear respuesta
                 var response = new PublishingUserResponseDTO
                 {
                     Id = post.Id,
-                    UserName = post.UserName,
-                    Description = post.Description,
-                    PublishDate = post.PublishDate ?? DateTime.MinValue,
-                    CommentsCount = 0
+                    //UserName = post.UserName,
+                    Text = post.Text,
+                    ImageUrl = post.ImageUrl
+                    
+                    //PublishDate = post.PublishDate ?? DateTime.MinValue,
+                    //CommentsCount = 0
                 };
 
                 return CreatedAtAction(nameof(GetPost), new { id = post.Id }, response);
@@ -81,11 +79,12 @@ namespace web_api.Controllers
 
                 return Ok(new PublishingUserResponseDTO
                 {
-                    Id = post.Id,
-                    UserName = post.UserName,
-                    Description = post.Description,
-                    PublishDate = post.PublishDate ?? DateTime.MinValue,
-                    CommentsCount = post.Comments?.Count ?? 0
+                    //Id = post.Id,
+                    //UserName = post.UserName,
+                    Text = post.Text,
+                    ImageUrl = post.ImageUrl
+                    //PublishDate = post.PublishDate ?? DateTime.MinValue,
+                    //CommentsCount = post.Comments?.Count ?? 0
                 });
             }
             catch (Exception ex)
