@@ -17,8 +17,7 @@ namespace dao_library.Interfaces
         
         IDAOComment CreateDAOComment();
 
-        IDAOPublishingUser CreateDAOPublishingUser();
-
+       
         IDAOReaction CreateDAOReaction();
     } 
 }

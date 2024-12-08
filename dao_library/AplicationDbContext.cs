@@ -39,6 +39,4 @@ public class AplicationDbContext : DbContext
 
     public DbSet<UserBan>? UserBans { get; set;}
 
-    public DbSet<PublishingUser>? PublishingUsers { get; set;}
-
 }

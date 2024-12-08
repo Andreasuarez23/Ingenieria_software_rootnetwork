@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using entities_library.publishing;
-using web_api.dto.publishingUser;
 using dao_library.Interfaces;
+using web_api.dto.publishing;
+using entities_library.login;
+
 
 namespace web_api.Controllers
 {
@@ -19,22 +21,22 @@ namespace web_api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePost([FromBody] PublishingUserRequestDTO publishingUserRequestDTO)
+        public async Task<IActionResult> CreatePost([FromBody] PublishingRequestDTO publishingRequestDTO)
         {
             // Validar campos obligatorios
-            if (string.IsNullOrEmpty(publishingUserRequestDTO.Text))
+            if (string.IsNullOrEmpty(publishingRequestDTO.Text))
                 return BadRequest("El nombre de usuario es obligatorio.");
 
-            if (string.IsNullOrEmpty(publishingUserRequestDTO.ImageUrl) || 
-                !Uri.IsWellFormedUriString(publishingUserRequestDTO.ImageUrl, UriKind.Absolute))
+            if (string.IsNullOrEmpty(publishingRequestDTO.ImageUrl) || 
+                !Uri.IsWellFormedUriString(publishingRequestDTO.ImageUrl, UriKind.Absolute))
                 return BadRequest("La URL de la imagen no es válida.");
 
             // Crear objeto del modelo de base de datos
-            var post = new PublishingUser
+            var post = new Publishing
             {
-                //UserName = publishingUserRequestDTO.UserName,
-                Text = publishingUserRequestDTO.Text,
-                ImageUrl = publishingUserRequestDTO.ImageUrl,
+                //UserName = publishingRequestDTO.UserName,
+                Text = publishingRequestDTO.Text,
+                ImageUrl = publishingRequestDTO.ImageUrl,
                 //PublishDate = DateTime.UtcNow // Usamos la fecha actual como la de publicación
             };
 
@@ -45,7 +47,7 @@ namespace web_api.Controllers
                 await publishingUserDAO.Save(post);
 
                 // Crear respuesta
-                var response = new PublishingUserResponseDTO
+                var response = new PublishingResponseDTO
                 {
                     Id = post.Id,
                     //UserName = post.UserName,
@@ -71,13 +73,13 @@ namespace web_api.Controllers
         {
             try
             {
-                var postDAO = _daoFactory.CreateDAOPublishingUser();
+                var postDAO = _daoFactory.CreateDAOPublishing();
                 var post = await postDAO.GetById(id);
 
                 if (post == null)
                     return NotFound($"No se encontró un post con ID {id}.");
 
-                return Ok(new PublishingUserResponseDTO
+                return Ok(new PublishingResponseDTO
                 {
                     //Id = post.Id,
                     //UserName = post.UserName,

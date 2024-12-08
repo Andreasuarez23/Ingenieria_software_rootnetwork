@@ -14,5 +14,5 @@ public class Comment
     public int PostId { get; set; }
 
     // Relación con PublishingUser
-    public virtual required PublishingUser PublishingUser { get; set; }
+    public virtual required Publishing Publishing { get; set; }
 }

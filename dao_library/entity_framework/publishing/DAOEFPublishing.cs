@@ -35,9 +35,19 @@ public class DAOEFPublishing : IDAOPublishing
         throw new NotImplementedException();
     }
 
-    public Task Save(Publishing publishing) 
+    public async Task Save(Publishing publishing) 
     {
-        throw new NotImplementedException();
+        if (publishing.Id == 0)
+        {
+            // Es una nueva publicación
+            await context.Set<Publishing>().AddAsync(publishing);
+        }
+        else
+        {
+            // Actualizar una publicación existente
+            context.Set<Publishing>().Update(publishing);
+        }
+        await context.SaveChangesAsync();
     }
 
     Task<Publishing> IDAOPublishing.GetById(long id)
@@ -45,3 +55,22 @@ public class DAOEFPublishing : IDAOPublishing
         throw new NotImplementedException();
     }
 }
+
+
+
+/*
+async Task<Publishing> IDAOPublishing.Save(Publishing publishing)
+    {
+        if (publishing.Id == 0)
+        {
+            await context.Set<Publishing>().AddAsync(publishing);
+        }
+        else
+        {
+            context.Set<Publishing>().Update(publishing);
+        }
+
+        await context.Save();
+        return publishing;
+    }
+*/

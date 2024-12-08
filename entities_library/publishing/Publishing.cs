@@ -6,7 +6,7 @@ namespace entities_library.publishing;
 
 public class Publishing
 {
-  public long Id { get; set; }
+  public int Id { get; set; }
 
     public required string Text { get; set; }
 
