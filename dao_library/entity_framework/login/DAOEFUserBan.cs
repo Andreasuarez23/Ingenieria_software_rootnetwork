@@ -1,5 +1,7 @@
 using dao_library.Interfaces.login;
 using entities_library.login;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace dao_library.entity_framework.login;
 
@@ -17,9 +19,9 @@ public class DAOEFUserBan : IDAOUserBan
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<UserBan>> GetAll()
+    public async Task<IEnumerable<UserBan>> GetAll()
     {
-        throw new NotImplementedException();
+        return await context.UserBans.ToListAsync();
     }
 
     public Task<UserBan> GetById(long id)
