@@ -30,13 +30,14 @@ namespace web_api.Controllers
             if (string.IsNullOrEmpty(publishingRequestDTO.ImageUrl) || 
                 !Uri.IsWellFormedUriString(publishingRequestDTO.ImageUrl, UriKind.Absolute))
                 return BadRequest("La URL de la imagen no es válida.");
-
+            User user = await this._daoFactory.CreateDAOUser().GetById(publishingRequestDTO.UserId);
             // Crear objeto del modelo de base de datos
             var post = new Publishing
             {
                 Text = publishingRequestDTO.Text,
                 ImageUrl = publishingRequestDTO.ImageUrl,
-                User = publishingRequestDTO.User ?? throw new ArgumentNullException(nameof(publishingRequestDTO.User), "El usuario no puede ser nulo."),
+                User =  user,
+                publishingStatus= PublishingStatus.Published,
                 DateTime = DateTime.UtcNow
             };
 
@@ -50,10 +51,10 @@ namespace web_api.Controllers
                 var response = new PublishingResponseDTO
                 {
                     Id = post.Id,
-                    //UserName = post.UserName,
+                    UserName = user.Name,
                     Text = post.Text,
                     ImageUrl = post.ImageUrl
-                    
+
                     //PublishDate = post.PublishDate ?? DateTime.MinValue,
                     //CommentsCount = 0
                 };

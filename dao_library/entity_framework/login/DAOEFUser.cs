@@ -19,9 +19,9 @@ public class DAOEFUser : IDAOUser
         throw new NotImplementedException();
     }
 
-    public Task<User> GetById(long id)
+    public async Task<User> GetById(long id)
     {
-        throw new NotImplementedException();
+        return await this.context.Users.FindAsync(id);
     }
 
     public async Task<User?> Get(string userName, string password)
@@ -59,8 +59,9 @@ public class DAOEFUser : IDAOUser
         return (users, totalRecords);
     }
 
-    public Task Save(User user)
+    public async Task  Save(User user)
     {
-        throw new NotImplementedException();
+        this.context.Users.Add(user);
+        await this.context.SaveChangesAsync();
     }
 }

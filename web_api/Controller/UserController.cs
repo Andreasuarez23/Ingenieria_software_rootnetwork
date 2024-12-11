@@ -27,7 +27,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost(Name = "CreateUser")]
-    public IActionResult Post(UserPostRequestDTO userPostRequestDTO)
+    public async Task<IActionResult> Post(UserPostRequestDTO userPostRequestDTO)
     {
         if(userPostRequestDTO == null)
         {
@@ -83,16 +83,21 @@ public class UserController : ControllerBase
             });
         }
 
-        long id = UserMock.Instance.CreateUser(
-            userPostRequestDTO.name, 
-            userPostRequestDTO.lastName, 
-            userPostRequestDTO.mail, 
-            userPostRequestDTO.birthdate,
-            userPostRequestDTO.password);
-
+        User user = new User {
+            LastName = userPostRequestDTO.lastName,
+            Mail = userPostRequestDTO.mail,
+            Name = userPostRequestDTO.name,
+            Birthdate= userPostRequestDTO.birthdate,
+            Description= "",
+            File = null,
+            Password = userPostRequestDTO.password,
+            Id = 0,
+            UserStatus = UserStatus.Active
+        };
+        await this.daoFactory.CreateDAOUser().Save(user);
         return Ok(new UserPostResponseDTO
         {
-            id = id,
+            id = user.Id,
             name = userPostRequestDTO.name,
             lastName = userPostRequestDTO.lastName,
             mail = userPostRequestDTO.mail
