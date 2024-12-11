@@ -1,3 +1,4 @@
+using entities_library.login;
 using web_api.dto.common;
 
 namespace web_api.dto.publishing;
@@ -9,5 +10,5 @@ public class PublishingRequestDTO : RequestDTO
     public string? ImageUrl { get; set; } // URL de la imagen
     
     public long UserId { get; set; } // ID del usuario (requerido para crear el objeto User)
-
+    public User? User { get; internal set; }
 }

@@ -34,10 +34,10 @@ namespace web_api.Controllers
             // Crear objeto del modelo de base de datos
             var post = new Publishing
             {
-                //UserName = publishingRequestDTO.UserName,
                 Text = publishingRequestDTO.Text,
                 ImageUrl = publishingRequestDTO.ImageUrl,
-                //PublishDate = DateTime.UtcNow // Usamos la fecha actual como la de publicación
+                User = publishingRequestDTO.User ?? throw new ArgumentNullException(nameof(publishingRequestDTO.User), "El usuario no puede ser nulo."),
+                DateTime = DateTime.UtcNow
             };
 
             try
