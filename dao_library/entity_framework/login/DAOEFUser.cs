@@ -74,4 +74,9 @@ public class DAOEFUser : IDAOUser
         await context.SaveChangesAsync();
     }
 
+        public async Task Update(User user)
+    {
+        this.context.Users.Add(user);
+        await this.context.SaveChangesAsync();
+    }
 }
