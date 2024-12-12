@@ -24,13 +24,14 @@ public class DAOEFUserBan : IDAOUserBan
         return await context.UserBans.ToListAsync();
     }
 
-    public Task<UserBan> GetById(long id)
+    public async Task<UserBan> GetById(long id)
     {
-        throw new NotImplementedException();
+         return await this.context.UserBans.FindAsync(id);
     }
 
-    public Task Save(UserBan userBan)
+    public async Task Save(UserBan userBan)
     {
-        throw new NotImplementedException();
+        this.context.UserBans.Add(userBan);
+        await this.context.SaveChangesAsync();
     }
 }

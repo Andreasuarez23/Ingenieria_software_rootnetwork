@@ -22,13 +22,14 @@ public class DAOEFPerson : IDAOPerson
         throw new NotImplementedException();
     }
 
-    public Task<Person> GetById(long id)
+    public async Task<Person> GetById(long id)
     {
-        throw new NotImplementedException();
+        return await this.context.Persons.FindAsync(id);
     }
 
-    public Task Save(Person person)
+    public async Task Save(Person person)
     {
-        throw new NotImplementedException();
+        this.context.Persons.Add(person);
+        await this.context.SaveChangesAsync();
     }
 }

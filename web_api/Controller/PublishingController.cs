@@ -54,7 +54,6 @@ namespace web_api.Controllers
                     UserName = user.Name,
                     Text = post.Text,
                     ImageUrl = post.ImageUrl
-
                     //PublishDate = post.PublishDate ?? DateTime.MinValue,
                     //CommentsCount = 0
                 };
