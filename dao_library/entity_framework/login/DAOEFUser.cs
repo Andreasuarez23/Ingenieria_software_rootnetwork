@@ -76,7 +76,12 @@ public class DAOEFUser : IDAOUser
 
         public async Task Update(User user)
     {
-        this.context.Users.Add(user);
+        if(user.UserStatus == UserStatus.Active)
+        {
+            user.UserStatus = UserStatus.Locked;
+        }
+
+        this.context.Users.Update(user);
         await this.context.SaveChangesAsync();
     }
 }

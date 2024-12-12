@@ -123,43 +123,41 @@ public class UserController : ControllerBase
     [HttpDelete("{id}", Name = "DeleteUser")]
     public async Task<IActionResult> Delete(int id)
     {
+    // Validar ID del usuario
         if (id <= 0)
-    {
-        return BadRequest(new ErrorResponseDTO
         {
+            return BadRequest(new ErrorResponseDTO
+            {
             success = false,
             message = "El ID del usuario es inválido."
-        });
-    }
-    
-    // Obtener el usuario desde la base de datos.
-    var userDao = this.daoFactory.CreateDAOUser();
-    User user = await userDao.GetById(id);
-    if (user == null)
+            });
+        }
 
+        // Obtener el usuario desde la base de datos
+        var userDao = this.daoFactory.CreateDAOUser();
+        User user = await userDao.GetById(id);
+
+        // Validar si el usuario existe
+        if (user == null)
         {
-        return NotFound(new ErrorResponseDTO
+            return NotFound(new ErrorResponseDTO
+            {
+                success = false,
+                message = "Usuario no encontrado."
+            });
+        }
+
+        // Llamar al método Update para manejar el cambio de estado
+        await userDao.Update(user);
+
+    // Retornar respuesta exitosa
+        return Ok(new SuccessResponseDTO
         {
-            success = false,
-            message = "Usuario no encontrado."
+            Success = true,
+            Message = "Usuario bloqueado exitosamente."
         });
-    }
+}
 
-    // Marcar al usuario como inactivo (baja lógica).
-    user.UserStatus = UserStatus.Locked;
-
-    // Guardar los cambios.
-    await userDao.Update(user);
-
-
-    return Ok(new SuccessResponseDTO
-    {
-        Success = true,
-        Message = "Usuario bloqueado  exitosamente."
-    });
-
-    }
-    
 
     [HttpPut(Name = "UpdateUser")]
     public async Task<IActionResult> Put(UserPutRequestDTO userPutRequestDTO)
