@@ -119,5 +119,56 @@ public class UserController : ControllerBase
         return Ok(users); 
     }
 
+    [HttpPut(Name = "UpdateUser")]
+    public async Task<IActionResult> Put(UserPutRequestDTO userPutRequestDTO)
+    {
+        if (userPutRequestDTO == null || userPutRequestDTO.Id <= 0)
+        {
+            return BadRequest(new ErrorResponseDTO
+            {
+                success = false,
+                message = "Datos ingresados incorrectos."
+            });
+        }
+
+        var daoUser = this.daoFactory.CreateDAOUser();
+
+        // Intenta obtener el usuario existente
+        var existingUser = await daoUser.GetById(userPutRequestDTO.Id);
+        if (existingUser == null)
+        {
+            return NotFound(new ErrorResponseDTO
+            {
+                success = false,
+                message = "El usuario no existe."
+            });
+        }
+
+        // Actualiza los campos solo si se proporcionan
+        if (!string.IsNullOrEmpty(userPutRequestDTO.Name))
+            existingUser.Name = userPutRequestDTO.Name;
+
+        if (!string.IsNullOrEmpty(userPutRequestDTO.LastName))
+            existingUser.LastName = userPutRequestDTO.LastName;
+
+        if (!string.IsNullOrEmpty(userPutRequestDTO.Mail))
+            existingUser.Mail = userPutRequestDTO.Mail;
+
+        if (userPutRequestDTO.Birthdate.HasValue)
+            existingUser.Birthdate = userPutRequestDTO.Birthdate.Value;
+
+        if (!string.IsNullOrEmpty(userPutRequestDTO.Password))
+            existingUser.Password = userPutRequestDTO.Password;
+
+        // Guarda los cambios
+        await daoUser.Save(existingUser);
+
+        return Ok(new
+        {
+            success = true,
+            message = "Usuario actualizado correctamente."
+        });
+    }
+
 }
 

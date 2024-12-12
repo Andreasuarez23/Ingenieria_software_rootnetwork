@@ -19,9 +19,9 @@ public class DAOEFUser : IDAOUser
         throw new NotImplementedException();
     }
 
-    public async Task<User> GetById(long id)
+    public async Task<User?> GetById(long id)
     {
-        return await this.context.Users.FindAsync(id);
+        return await context.Users.FindAsync(id) ?? throw new KeyNotFoundException($"No se encontró un usuario con el ID {id}.");
     }
 
     public async Task<User?> Get(string userName, string password)
@@ -36,18 +36,17 @@ public class DAOEFUser : IDAOUser
         return user;
     }
 
-    public async Task<(IEnumerable<User>, int)> GetAll(
-        string? query,
-        int page,
-        int pageSize
-    )
+    public async Task<(IEnumerable<User>, int)> GetAll(string? query,int page,int pageSize)
     {
+        if (page <= 0 || pageSize <= 0) throw new ArgumentException("Page and pageSize must be greater than zero.");
+
         IQueryable<User>? usersQuery = context.Users ?? throw new InvalidOperationException("La tabla de usuarios no está disponible.");
-        if (query != null)
-    {
-        usersQuery = usersQuery.Where(
-            p => p.Mail.Contains(query) || p.Name.Contains(query));
-    }
+
+        if (!string.IsNullOrEmpty(query))
+        {
+            usersQuery = usersQuery.Where(
+                p => p.Mail.Contains(query) || p.Name.Contains(query));
+        }
 
         int totalRecords = await usersQuery.CountAsync();
 
@@ -59,9 +58,20 @@ public class DAOEFUser : IDAOUser
         return (users, totalRecords);
     }
 
-    public async Task  Save(User user)
+    public async Task Save(User user)
     {
-        this.context.Users.Add(user);
-        await this.context.SaveChangesAsync();
+        if (user == null) throw new ArgumentNullException(nameof(user));
+
+        if (user.Id == 0)
+        {
+            context.Users.Add(user); // Nuevo usuario
+        }
+        else
+        {
+            context.Users.Update(user); // Actualización
+        }
+
+        await context.SaveChangesAsync();
     }
+
 }
