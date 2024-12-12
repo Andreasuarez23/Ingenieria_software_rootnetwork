@@ -5,8 +5,7 @@ using entities_library.login;
 using Microsoft.AspNetCore.Mvc;
 using web_api.dto.common;
 using web_api.dto.login;
-using web_api.helpers;
-using web_api.mock;
+
 
 namespace web_api.Controllers;
 
@@ -117,7 +116,50 @@ public class UserController : ControllerBase
             request.pageSize);
 
         return Ok(users); 
+
+    
     }
+
+    [HttpDelete("{id}", Name = "DeleteUser")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        if (id <= 0)
+    {
+        return BadRequest(new ErrorResponseDTO
+        {
+            success = false,
+            message = "El ID del usuario es inválido."
+        });
+    }
+    
+    // Obtener el usuario desde la base de datos.
+    var userDao = this.daoFactory.CreateDAOUser();
+    User user = await userDao.GetById(id);
+    if (user == null)
+
+        {
+        return NotFound(new ErrorResponseDTO
+        {
+            success = false,
+            message = "Usuario no encontrado."
+        });
+    }
+
+    // Marcar al usuario como inactivo (baja lógica).
+    user.UserStatus = UserStatus.Locked;
+
+    // Guardar los cambios.
+    await userDao.Update(user);
+
+
+    return Ok(new SuccessResponseDTO
+    {
+        Success = true,
+        Message = "Usuario bloqueado  exitosamente."
+    });
+
+    }
+    
 
     [HttpPut(Name = "UpdateUser")]
     public async Task<IActionResult> Put(UserPutRequestDTO userPutRequestDTO)
