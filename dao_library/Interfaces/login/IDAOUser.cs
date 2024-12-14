@@ -10,7 +10,7 @@ public interface IDAOUser
         int pageSize
     );
 
-    Task<User> GetById(long id);
+    Task<User?> GetById(long id);
     Task Save(User user);
 
     
