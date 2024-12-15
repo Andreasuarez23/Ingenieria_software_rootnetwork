@@ -1,5 +1,4 @@
 namespace entities_library.login;
-
 public class UserBan
 {
     public long Id{get; set;}

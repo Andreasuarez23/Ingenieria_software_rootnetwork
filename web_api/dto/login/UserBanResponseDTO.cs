@@ -1,5 +1,4 @@
 using web_api.dto.common;
-
 namespace web_api.dto.login;
 
 public class UserBanResponseDTO : ResponsetDTO
@@ -8,5 +7,5 @@ public class UserBanResponseDTO : ResponsetDTO
     public DateTime? StartDateTime { get; set; }
     public DateTime? EndDateTime { get; set; }
     public string? Reason { get; set; }
-    public long UserId { get; set; } // id usuario baneado.
+    public long UserId { get; set; }
 }
