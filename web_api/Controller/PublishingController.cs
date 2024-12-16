@@ -23,48 +23,61 @@ namespace web_api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromBody] PublishingRequestDTO publishingRequestDTO)
         {
-            // Validar campos obligatorios
             if (string.IsNullOrEmpty(publishingRequestDTO.Text))
-                return BadRequest("El nombre de usuario es obligatorio.");
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "El texto de la publicación es obligatorio."
+                });
 
             if (string.IsNullOrEmpty(publishingRequestDTO.ImageUrl) || 
                 !Uri.IsWellFormedUriString(publishingRequestDTO.ImageUrl, UriKind.Absolute))
-                return BadRequest("La URL de la imagen no es válida.");
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "La URL de la imagen no es válida."
+                });
+
             User user = await this._daoFactory.CreateDAOUser().GetById(publishingRequestDTO.UserId);
-            // Crear objeto del modelo de base de datos
+
             var post = new Publishing
             {
                 Text = publishingRequestDTO.Text,
                 ImageUrl = publishingRequestDTO.ImageUrl,
-                User =  user,
-                publishingStatus= PublishingStatus.Published,
+                User = user,
+                publishingStatus = PublishingStatus.Published,
                 DateTime = DateTime.UtcNow
             };
 
             try
             {
-                // Guardar el post en la base de datos usando el DAO
                 var publishingUserDAO = _daoFactory.CreateDAOPublishing();
                 await publishingUserDAO.Save(post);
 
-                // Crear respuesta
                 var response = new PublishingResponseDTO
                 {
                     Id = post.Id,
                     UserName = user.Name,
                     Text = post.Text,
                     ImageUrl = post.ImageUrl
-                    //PublishDate = post.PublishDate ?? DateTime.MinValue,
-                    //CommentsCount = 0
                 };
 
-                return CreatedAtAction(nameof(GetPost), new { id = post.Id }, response);
+                return CreatedAtAction(nameof(GetPost), new { id = post.Id }, new
+                {
+                    success = true,
+                    message = "Publicación creada con éxito.",
+                    data = response
+                });
             }
             catch (Exception ex)
             {
-                // Loguear el error y devolver respuesta de error
                 _logger.LogError(ex, "Error al crear el post.");
-                return StatusCode(500, "Error interno del servidor.");
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Ocurrió un error inesperado al crear la publicación.",
+                    error = ex.Message
+                });
             }
         }
 
@@ -95,5 +108,61 @@ namespace web_api.Controllers
                 return StatusCode(500, "Error interno del servidor.");
             }
         }
+
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllPosts(string? query, int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var postDAO = _daoFactory.CreateDAOPublishing();
+                var (posts, totalRecords) = await postDAO.GetAll(query, page, pageSize);
+
+                if (!posts.Any())
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "No se encontraron publicaciones.",
+                        data = new List<object>(),
+                        totalRecords = totalRecords
+                    });
+                }
+
+                var response = posts.Select(post => new PublishingResponseDTO
+                {
+                    Id = post.Id,
+                    UserName = post.User?.Name,
+                    Text = post.Text,
+                    ImageUrl = post.ImageUrl,
+                    PublishDate = post.DateTime
+                }).ToList();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Publicaciones obtenidas con éxito.",
+                    data = response,
+                    totalRecords = totalRecords // Incluye el total de registros
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener las publicaciones.");
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Ocurrió un error inesperado al obtener las publicaciones.",
+                    error = ex.Message
+                });
+            }
+        }
+
+    
+    
+    
+    
+    
     }
+    
 }
