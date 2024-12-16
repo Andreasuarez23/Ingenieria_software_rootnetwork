@@ -11,8 +11,7 @@ public class Comment
 
     public DateTime Date { get; set; } = DateTime.UtcNow;
 
-    public int PostId { get; set; }
+    public int? PublishingId { get; set; }
 
-    // Relación con PublishingUser
-    public virtual required Publishing Publishing { get; set; }
+    public string? User { get; set; }
 }

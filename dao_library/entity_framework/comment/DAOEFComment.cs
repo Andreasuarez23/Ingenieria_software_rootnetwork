@@ -15,53 +15,45 @@ namespace dao_library.entity_framework.comment
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-        public Comment Create(Comment comment)
+        public Comment Createcomment(Comment comment)
         {
             throw new NotImplementedException();
         }
 
-        public bool Delete(int commentId)
+
+        public async Task Save(Comment comment)
         {
-            throw new NotImplementedException();
+            if (comment.Id == 0)
+            {
+                // Es un nuevo comentario
+                await _context.Set<Comment>().AddAsync(comment);
+            }
+            else
+            {
+                // Actualizar un comentario existente
+                _context.Set<Comment>().Update(comment);
+            }
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<(IEnumerable<Comment>, int)> GetAll(int postId, int page, int pageSize)
-    {
-        if (_context.Comments == null)
+        public async Task<Comment?> GetById(long id)
         {
-            throw new InvalidOperationException("Comments no está definido en el contexto.");
+            return await _context.Comments
+                .Include(c => c.User)         // Incluye la relación con el usuario
+                .Include(c => c.PublishingId)  // Incluye la relación con la publicación
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        var commentsQuery = _context.Comments.Where(c => c.PostId == postId);
-        int totalRecords = await commentsQuery.CountAsync();
 
-        var comments = await commentsQuery
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
 
-        return (comments, totalRecords);
-    }
 
-        public object GetAll(int postId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Comment? GetCommentsById(int commentId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Comment? Update(int commentId, Comment updatedComment)
-        {
-            throw new NotImplementedException();
-        }
-
+}
         
     }
 
-}
+
 
 
 

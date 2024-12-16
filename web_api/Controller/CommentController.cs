@@ -4,6 +4,7 @@ using dao_library.Interfaces.comment;
 using web_api.dto.common;
 using web_api.dto.comment;
 using entities_library.comment;
+using web_api.dto;
 
 
 
@@ -25,99 +26,92 @@ namespace web_api.Controllers
         }
 
 
-        // Obtener comentarios por publicación
-        [HttpGet("Post/{postId}")]
-        public IActionResult GetAll(int postId)
-        {
-            try
-            {
-                var commentDao = _daoFactory?.CreateDAOComment();
-                var comments = commentDao?.GetAll(postId);
-                return Ok(comments);
-            }
-            catch (Exception ex)
-            {
-                _logger?.LogError(ex, "Error obteniendo comentarios para la publicación {PostId}", postId);
-                return StatusCode(500, "Error interno del servidor");
-            }
-        }
 
-        //Crear un comentario
         [HttpPost]
-            public IActionResult CreateComment([FromBody] Comment comment)
+        public async Task<IActionResult> CreateComment([FromBody] CommentRequestDTO commentRequestDTO)
         {
+            // Validar campos obligatorios
+            if (string.IsNullOrEmpty(commentRequestDTO.Text))
+                return BadRequest("El texto del comentario es obligatorio.");
+
+             // Obtener usuario
+            var userDAO = _daoFactory.CreateDAOUser();
+            var user = await userDAO.GetById(commentRequestDTO.UserId);
+            if (user == null)
+                return BadRequest("El usuario especificado no existe.");
+
+            // Obtener publicación
+            var publishingDAO = _daoFactory.CreateDAOPublishing();
+            var publishing = await publishingDAO.GetById(commentRequestDTO.PublishingId);
+            if (publishing == null)
+                return BadRequest("La publicación especificada no existe.");
+
+            // Crear objeto del modelo de base de datos
+            var comment = new Comment
+            {
+                Text = commentRequestDTO.Text,
+                User = user.Name,
+                PublishingId = publishing.Id,
+                Date = DateTime.UtcNow
+            };
+
             try
             {
-                var commentDao = _daoFactory?.CreateDAOComment();
-                var createdComment = commentDao?.Create(comment);
-                return CreatedAtAction(nameof(GetCommentById), new { commentId = createdComment?.Id }, createdComment);
+                // Guardar el comentario en la base de datos usando el DAO
+                var commentDAO = _daoFactory.CreateDAOComment();
+                await commentDAO.Save(comment);
+
+                // Crear respuesta
+                var response = new CommentResponseDTO
+                {
+                //    Id = comment.Id,
+                //    UserName = user.Name,
+                    Text = comment.Text,
+                //    PublishingId = publishing.Id,
+                    Date = comment.Date
+                };
+
+                return CreatedAtAction(nameof(GetById), new { id = comment.Id }, response);
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "Error creando el comentario");
-                return StatusCode(500, "Error interno del servidor");
+                // Loguear el error y devolver respuesta de error
+                _logger.LogError(ex, "Error al crear el comentario.");
+                return StatusCode(500, "Error interno del servidor.");
             }
         }
 
-        //obtener comentarios por id
-        [HttpGet("{commentId}")]
-        public IActionResult GetCommentById(int commentId)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(long id)
         {
             try
             {
-                var commentDao = _daoFactory?.CreateDAOComment();
-                var comment = commentDao?.GetCommentsById(commentId);
-                return comment != null ? Ok(comment) : NotFound();
+                // Obtener el comentario desde el DAO
+                var commentDAO = _daoFactory.CreateDAOComment();
+                var comment = await commentDAO.GetById(id);
+
+                if (comment == null)
+                {
+                    return NotFound($"No se encontró un comentario con el ID {id}.");
+                }
+
+                // Crear respuesta
+                var response = new CommentResponseDTO
+                {
+                    Id = comment.Id,
+                    Text = comment.Text,
+                    // UserName = comment.User?.Name,
+                    Date = comment.Date
+                };
+
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "Error obteniendo el comentario {CommentId}", commentId);
-                return StatusCode(500, "Error interno del servidor");
+                // Loguear error y devolver respuesta de error
+                _logger.LogError(ex, "Error al obtener el comentario.");
+                return StatusCode(500, "Error interno del servidor.");
             }
         }
-         // eliminar un comentario
-        [HttpDelete("{commentId}")]
-        public IActionResult DeleteComment(int commentId)
-        {
-            try
-            {
-                var commentDao = _daoFactory?.CreateDAOComment();
-                var deleted = commentDao?.Delete(commentId);
-                return deleted == true ? NoContent() : NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger?.LogError(ex, "Error eliminando el comentario {CommentId}", commentId);
-                return StatusCode(500, "Error interno del servidor");
-            }
-        }
-
-                // Actualizar un comentario existente
-        [HttpPut("{commentId}")]
-        public IActionResult UpdateComment(int commentId, [FromBody] Comment updatedComment)
-        {
-            try
-            {
-                var commentDao = _daoFactory?.CreateDAOComment();
-                var comment = commentDao?.Update(commentId, updatedComment);
-                return comment != null ? Ok(comment) : NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger?.LogError(ex, "Error actualizando el comentario {CommentId}", commentId);
-                return StatusCode(500, "Error interno del servidor");
-            }
-        }
-
-
-
-
-
-
-
-
-    } 
+    }
 }
-
-
-
