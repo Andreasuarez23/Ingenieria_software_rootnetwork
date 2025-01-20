@@ -13,6 +13,8 @@ namespace dao_library.Interfaces.comment
         
         Task<Comment?> GetById(long id);
 
+        //Task Delete (Comment comment);
+
 
 
     }

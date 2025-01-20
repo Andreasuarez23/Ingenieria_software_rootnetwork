@@ -8,110 +8,140 @@ using web_api.dto;
 
 
 
-namespace web_api.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class CommentController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class CommentController : ControllerBase
-    {
-        private readonly ILogger<CommentController>? _logger;
-        private readonly IDAOFactory? _daoFactory;
+    private readonly IDAOFactory _daoFactory;
+    private readonly ILogger<CommentController> _logger;
 
-        public CommentController(
-            ILogger<CommentController> logger,
-            IDAOFactory daoFactory)
+    public CommentController(ILogger<CommentController> logger, IDAOFactory daoFactory)
+    {
+        _logger = logger;
+        _daoFactory = daoFactory;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateComment([FromBody] CommentRequestDTO commentRequestDTO)
+    {
+        // Validación del texto del comentario
+        if (string.IsNullOrEmpty(commentRequestDTO.Text))
         {
-            _logger = logger;
-            _daoFactory = daoFactory;
+            return BadRequest(new
+            {
+                success = false,
+                message = "El texto del comentario es obligatorio."
+            });
         }
 
-
-
-        [HttpPost]
-        public async Task<IActionResult> CreateComment([FromBody] CommentRequestDTO commentRequestDTO)
+        try
         {
-            // Validar campos obligatorios
-            if (string.IsNullOrEmpty(commentRequestDTO.Text))
-                return BadRequest("El texto del comentario es obligatorio.");
-
-             // Obtener usuario
-            var userDAO = _daoFactory.CreateDAOUser();
-            var user = await userDAO.GetById(commentRequestDTO.UserId);
-            if (user == null)
-                return BadRequest("El usuario especificado no existe.");
-
-            // Obtener publicación
-            var publishingDAO = _daoFactory.CreateDAOPublishing();
-            var publishing = await publishingDAO.GetById(commentRequestDTO.PublishingId);
+            // Validar que la publicación exista
+            var publishing = await _daoFactory.CreateDAOPublishing().GetById(commentRequestDTO.PublishingId);
             if (publishing == null)
-                return BadRequest("La publicación especificada no existe.");
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "La publicación sobre la que se intenta comentar no existe."
+                });
+            }
 
-            // Crear objeto del modelo de base de datos
+            // Validar que el usuario exista
+            var user = await _daoFactory.CreateDAOUser().GetById(commentRequestDTO.UserId);
+            if (user == null)
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "El usuario que intenta comentar no existe."
+                });
+            }
+
+            // Crear el comentario
             var comment = new Comment
             {
                 Text = commentRequestDTO.Text,
-                User = user.Name,
+                Date = DateTime.UtcNow,
                 PublishingId = publishing.Id,
-                Date = DateTime.UtcNow
+                User = user.Name
             };
 
-            try
-            {
-                // Guardar el comentario en la base de datos usando el DAO
-                var commentDAO = _daoFactory.CreateDAOComment();
-                await commentDAO.Save(comment);
+            // Guardar el comentario
+            var commentDAO = _daoFactory.CreateDAOComment();
+            await commentDAO.Save(comment);
 
-                // Crear respuesta
-                var response = new CommentResponseDTO
-                {
-                //    Id = comment.Id,
-                //    UserName = user.Name,
-                    Text = comment.Text,
-                //    PublishingId = publishing.Id,
-                    Date = comment.Date
-                };
-
-                return CreatedAtAction(nameof(GetById), new { id = comment.Id }, response);
-            }
-            catch (Exception ex)
+            // Crear la respuesta
+            var response = new CommentResponseDTO
             {
-                // Loguear el error y devolver respuesta de error
-                _logger.LogError(ex, "Error al crear el comentario.");
-                return StatusCode(500, "Error interno del servidor.");
-            }
+                Id = comment.Id,
+                Text = comment.Text,
+                UserName = user.Name,
+                PublishingId = publishing.Id
+            };
+
+            return CreatedAtAction(nameof(GetComment), new { id = comment.Id }, new
+            {
+                success = true,
+                message = "Comentario creado con éxito.",
+                data = response
+            });
         }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(long id)
+        catch (Exception ex)
         {
-            try
+            _logger.LogError(ex, "Error al crear el comentario.");
+            return StatusCode(500, new
             {
-                // Obtener el comentario desde el DAO
-                var commentDAO = _daoFactory.CreateDAOComment();
-                var comment = await commentDAO.GetById(id);
+                success = false,
+                message = "Ocurrió un error inesperado al crear el comentario.",
+                error = ex.Message
+            });
+        }
+    }
 
-                if (comment == null)
-                {
-                    return NotFound($"No se encontró un comentario con el ID {id}.");
-                }
+    // Método GetComment ()
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetComment(long id)
+    {
+        try
+        {
+            var commentDAO = _daoFactory.CreateDAOComment();
+            var comment = await commentDAO.GetById(id);
 
-                // Crear respuesta
-                var response = new CommentResponseDTO
-                {
-                    Id = comment.Id,
-                    Text = comment.Text,
-                    // UserName = comment.User?.Name,
-                    Date = comment.Date
-                };
-
-                return Ok(response);
-            }
-            catch (Exception ex)
+            if (comment == null)
             {
-                // Loguear error y devolver respuesta de error
-                _logger.LogError(ex, "Error al obtener el comentario.");
-                return StatusCode(500, "Error interno del servidor.");
+                return NotFound(new
+                {
+                    success = false,
+                    message = "El comentario no existe."
+                });
             }
+
+            var response = new CommentResponseDTO
+            {
+                Id = comment.Id,
+                Text = comment.Text,
+                UserName = comment.User,
+                //PublishingId = comment.PublishingId
+            };
+
+            return Ok(new
+            {
+                success = true,
+                data = response
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener el comentario.");
+            return StatusCode(500, new
+            {
+                success = false,
+                message = "Ocurrió un error inesperado al obtener el comentario.",
+                error = ex.Message
+            });
         }
     }
 }
+
+ 
