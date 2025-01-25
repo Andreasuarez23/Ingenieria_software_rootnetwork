@@ -56,10 +56,6 @@ public class DAOEFPublishing : IDAOPublishing
 
     //public async Task<IEnumerable<Publishing>> GetAll() => await context.Set<Publishing>();
 
-    public Task<Publishing> GetById(long id) 
-    {
-        throw new NotImplementedException();
-    }
 
     public async Task Save(Publishing publishing) 
     {
@@ -76,9 +72,9 @@ public class DAOEFPublishing : IDAOPublishing
         await context.SaveChangesAsync();
     }
 
-    Task<Publishing> IDAOPublishing.GetById(long id)
+    async Task<Publishing> IDAOPublishing.GetById(long id)
     {
-        throw new NotImplementedException();
+        return await context.Set<Publishing>().FindAsync((int)id);
     }
 }
 
