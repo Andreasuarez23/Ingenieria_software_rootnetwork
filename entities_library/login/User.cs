@@ -11,6 +11,9 @@ public class User : Person
     public entities_library.file_system.AppFile? File { get; set; }
 
     public string Description { get; set; } = "";
+
+    public bool IsAdmin {get; set;}= false;
+
     #endregion
 
     #region Methods
@@ -26,7 +29,6 @@ public class User : Person
 
     private string encrypt(string password)
     {
-        
         return password;
     }
     #endregion

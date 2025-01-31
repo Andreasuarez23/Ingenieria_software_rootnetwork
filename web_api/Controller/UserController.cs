@@ -89,10 +89,13 @@ public class UserController : ControllerBase
             Birthdate= userPostRequestDTO.birthdate,
             Description= "",
             File = null,
-            Password = userPostRequestDTO.password,
             Id = 0,
-            UserStatus = UserStatus.Active
+            UserStatus = UserStatus.Active,
+            IsAdmin = userPostRequestDTO.isAdmin
         };
+
+        user.Encrypt(userPostRequestDTO.password);
+        
         await this.daoFactory.CreateDAOUser().Save(user);
         return Ok(new UserPostResponseDTO
         {

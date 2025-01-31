@@ -9,4 +9,6 @@ public class UserPostRequestDTO : RequestDTO
     public DateTime? birthdate { get; set; }
     public string mail { get; set; } = "";
     public string password { get; set; } = "";
+
+    public bool isAdmin {get; set;} = false; 
 }
