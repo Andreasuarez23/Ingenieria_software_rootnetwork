@@ -50,7 +50,6 @@ public class DAOEFComment : IDAOComment
     public async Task<Comment?> GetById(long id)
     {
         return await context.Set<Comment>()
-            .Include(c => c.User)  // Incluye la relación con el usuario si existe
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
