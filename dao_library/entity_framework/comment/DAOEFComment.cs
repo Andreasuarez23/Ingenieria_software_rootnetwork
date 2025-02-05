@@ -67,6 +67,14 @@ public class DAOEFComment : IDAOComment
             throw new InvalidOperationException("Comentario no encontrado.");
         }
     }
+
+    public async Task<List<Comment>> GetCommentsByPostId(long postId)
+    {
+        return await context.Set<Comment>()
+            .Where(c => c.PublishingId == postId)
+            .ToListAsync();
+    }
+
 }
  
 

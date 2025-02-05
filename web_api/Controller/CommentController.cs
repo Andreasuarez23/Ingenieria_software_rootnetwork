@@ -142,6 +142,39 @@ public class CommentController : ControllerBase
             });
         }
     }
+
+
+    [HttpGet("post/{postId}")]
+    public async Task<IActionResult> GetCommentsByPostId(long postId)
+    {
+        try
+        {
+            var commentDAO = _daoFactory.CreateDAOComment();
+            var comments = await commentDAO.GetCommentsByPostId(postId);
+
+            if (comments == null || comments.Count == 0)
+            {
+                return NotFound(new { success = false, message = "No hay comentarios para esta publicación." });
+            }
+
+            var response = comments.Select(comment => new CommentResponseDTO
+            {
+                Id = comment.Id,
+                Text = comment.Text,
+                UserName = comment.User,
+                PublishingId = comment.PublishingId ?? 0
+            }).ToList();
+
+            return Ok(new { success = true, data = response });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener los comentarios de la publicación.");
+            return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado.", error = ex.Message });
+        }
+    }
+
+
 }
 
  

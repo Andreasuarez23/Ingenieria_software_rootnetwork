@@ -15,7 +15,7 @@ namespace dao_library.Interfaces.comment
 
         //Task Delete (Comment comment);
 
-
+        Task<List<Comment>> GetCommentsByPostId(long postId);
 
     }
 }
