@@ -30,7 +30,7 @@ namespace web_api.Controllers
                     message = "El texto de la publicación es obligatorio."
                 });
 
-            if (string.IsNullOrEmpty(publishingRequestDTO.ImageUrl) || 
+            if (string.IsNullOrEmpty(publishingRequestDTO.ImageUrl) ||
                 !Uri.IsWellFormedUriString(publishingRequestDTO.ImageUrl, UriKind.Absolute))
                 return BadRequest(new
                 {
@@ -157,12 +157,58 @@ namespace web_api.Controllers
                 });
             }
         }
+        [HttpGet("GetPostsByUser/{id_user}")]
+    public async Task<IActionResult> GetPostsByUser(int id_user)
+    {
+        try
+        {
+            var userDAO = _daoFactory.CreateDAOUser();
+            var postDAO = _daoFactory.CreateDAOPublishing();
 
-    
-    
-    
-    
-    
+            // Obtener el usuario por id
+            var user = await userDAO.GetById(id_user);
+            if (user == null)
+            {
+                return NotFound("Usuario no encontrado.");
+            }
+
+            // Obtener todas las publicaciones y filtrar por usuario
+            var (posts, totalRecords) = await postDAO.GetAll(null, 1, 10);
+            var userPosts = posts.Where(p => p.User != null && p.User.Id == id_user)  // Asegurar que p.User no sea null
+                                .Select(p => new { p.Id, p.Text, p.ImageUrl, p.DateTime })
+                                .ToList();
+
+            return Ok(new
+            {
+                User = new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Mail
+                },
+                Posts = userPosts
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener las publicaciones del usuario.");
+            return StatusCode(500, new
+            {
+                success = false,
+                message = "Ocurrió un error inesperado al obtener las publicaciones del usuario.",
+                error = ex.Message
+            });
+        }
     }
-    
+
+
+
+
+
+
+
+
+
+    }
+
 }

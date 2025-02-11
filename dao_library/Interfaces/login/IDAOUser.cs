@@ -19,4 +19,5 @@ public interface IDAOUser
     Task Delete(User user);
     Task<User?> Get(string userName, string password);
     Task Update(User user);
+
 }
