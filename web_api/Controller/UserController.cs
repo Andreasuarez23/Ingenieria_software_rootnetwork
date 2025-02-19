@@ -107,21 +107,25 @@ public class UserController : ControllerBase
     }
 
     [HttpGet(Name = "GetAll")]
-
-    public async Task<IActionResult>Get(
-        [FromQuery]UserGetAllRequestDTO request)
+    public async Task<IActionResult> Get(
+        [FromQuery] string? query,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] bool? isAdmin = null) // Nuevo parámetro opcional
     {
         IDAOUser daoUser = this.daoFactory.CreateDAOUser();
 
-        var (users, totalRecords) = await daoUser.GetAll(
-            request.query,
-            request.page,
-            request.pageSize);
+        var (users, totalRecords) = await daoUser.GetAll(query, page, pageSize);
 
-        return Ok(users); 
+        // Filtrar por isAdmin si se proporciona
+        if (isAdmin.HasValue)
+        {
+            users = users.Where(u => u.IsAdmin == isAdmin.Value).ToList();
+        }
 
-    
+        return Ok(users);
     }
+
 
     [HttpDelete("{id}", Name = "DeleteUser")]
     public async Task<IActionResult> Delete(int id)
