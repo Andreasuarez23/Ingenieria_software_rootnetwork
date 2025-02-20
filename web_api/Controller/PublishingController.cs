@@ -97,8 +97,9 @@ namespace web_api.Controllers
                     //Id = post.Id,
                     //UserName = post.UserName,
                     Text = post.Text,
-                    ImageUrl = post.ImageUrl
-                    //PublishDate = post.PublishDate ?? DateTime.MinValue,
+                    ImageUrl = post.ImageUrl,
+                    PublishDate = post.DateTime
+                    //PublishDate = post.PublishDate ?? DateTime.MinValue
                     //CommentsCount = post.Comments?.Count ?? 0
                 });
             }
