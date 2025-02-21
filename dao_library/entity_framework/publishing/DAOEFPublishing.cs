@@ -26,32 +26,29 @@ public class DAOEFPublishing : IDAOPublishing
 
     public async Task<(IEnumerable<Publishing> posts, int totalRecords)> GetAll(string? query, int page, int pageSize)
     {
-        // Verificar que los parámetros page y pageSize sean válidos
         if (page <= 0 || pageSize <= 0) 
             throw new ArgumentException("Page and pageSize must be greater than zero.");
 
-        // Iniciar la consulta a la base de datos para las publicaciones
-        IQueryable<Publishing> postsQuery = context.Set<Publishing>();
+        // Incluir la relación con el usuario
+        IQueryable<Publishing> postsQuery = context.Set<Publishing>()
+                                                .Include(p => p.User); // 💡 Aquí incluimos la relación con el usuario
 
         if (!string.IsNullOrEmpty(query))
         {
-            // Si hay una query, filtrar por texto o URL de la imagen
             postsQuery = postsQuery.Where(
                 p => p.Text.Contains(query) || p.ImageUrl.Contains(query));
         }
 
-        // Obtener el total de registros que cumplen la condición
         int totalRecords = await postsQuery.CountAsync();
 
-        // Obtener las publicaciones de la página solicitada
         var posts = await postsQuery
-            .Skip((page - 1) * pageSize) // Salta las publicaciones de las páginas anteriores
-            .Take(pageSize) // Toma solo el número de publicaciones de la página actual
-            .ToListAsync(); // Ejecutar la consulta de manera asíncrona
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
-        // Devolver los resultados (publicaciones + total de registros)
         return (posts, totalRecords);
     }
+
 
 
     //public async Task<IEnumerable<Publishing>> GetAll() => await context.Set<Publishing>();
@@ -74,8 +71,11 @@ public class DAOEFPublishing : IDAOPublishing
 
     async Task<Publishing> IDAOPublishing.GetById(long id)
     {
-        return await context.Set<Publishing>().FindAsync((int)id);
+        return await context.Set<Publishing>()
+        .Include(p => p.User)
+        .FirstOrDefaultAsync(p => p.Id == id);
     }
+
 }
 
 
