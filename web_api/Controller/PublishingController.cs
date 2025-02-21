@@ -158,57 +158,127 @@ namespace web_api.Controllers
             }
         }
         [HttpGet("GetPostsByUser/{id_user}")]
-    public async Task<IActionResult> GetPostsByUser(int id_user)
+        public async Task<IActionResult> GetPostsByUser(int id_user)
+        {
+            try
+            {
+                var userDAO = _daoFactory.CreateDAOUser();
+                var postDAO = _daoFactory.CreateDAOPublishing();
+
+                // Obtener el usuario por ID
+                var user = await userDAO.GetById(id_user);
+                if (user == null)
+                {
+                    return NotFound("Usuario no encontrado.");
+                }
+
+                // Obtener todas las publicaciones (incluyendo las compartidas)
+                var (posts, totalRecords) = await postDAO.GetAll(null, 1, 10);
+
+                var userPosts = posts
+                    .Where(p => p.User != null && p.User.Id == id_user) // Filtrar solo las publicaciones del usuario
+                    .Select(p => new 
+                    {
+                        p.Id,
+                        p.Text,
+                        p.ImageUrl,
+                        p.DateTime,
+                        IsShared = p.OriginalPost != null, // Indica si es una publicación compartida
+                        OriginalPost = p.OriginalPost != null 
+                            ? new 
+                            {
+                                p.OriginalPost.Id,
+                                p.OriginalPost.Text,
+                                p.OriginalPost.ImageUrl,
+                                p.OriginalPost.DateTime,
+                                OriginalUser = new 
+                                {
+                                    p.OriginalPost.User.Id,
+                                    p.OriginalPost.User.Name
+                                }
+                            } 
+                            : null
+                    })
+                    .ToList();
+
+                return Ok(new
+                {
+                    User = new
+                    {
+                        user.Id,
+                        user.Name,
+                        user.Mail
+                    },
+                    Posts = userPosts
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener las publicaciones del usuario.");
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Ocurrió un error inesperado al obtener las publicaciones del usuario.",
+                    error = ex.Message
+                });
+            }
+        }
+
+
+        [HttpPost("share")]
+    public async Task<IActionResult> SharePost([FromBody] SharePostDTO sharePostDTO)
     {
         try
         {
             var userDAO = _daoFactory.CreateDAOUser();
             var postDAO = _daoFactory.CreateDAOPublishing();
 
-            // Obtener el usuario por id
-            var user = await userDAO.GetById(id_user);
+            // Verificar que el usuario existe
+            var user = await userDAO.GetById(sharePostDTO.UserId);
             if (user == null)
             {
-                return NotFound("Usuario no encontrado.");
+                return NotFound(new { success = false, message = "Usuario no encontrado." });
             }
 
-            // Obtener todas las publicaciones y filtrar por usuario
-            var (posts, totalRecords) = await postDAO.GetAll(null, 1, 10);
-            var userPosts = posts.Where(p => p.User != null && p.User.Id == id_user)  // Asegurar que p.User no sea null
-                                .Select(p => new { p.Id, p.Text, p.ImageUrl, p.DateTime })
-                                .ToList();
+            // Verificar que la publicación original existe
+            var originalPost = await postDAO.GetById(sharePostDTO.PostId);
+            if (originalPost == null)
+            {
+                return NotFound(new { success = false, message = "Publicación original no encontrada." });
+            }
+
+            // Crear una nueva publicación que referencia a la original
+            var sharedPost = new Publishing
+            {
+                Text = originalPost.Text, // Se mantiene el mismo texto
+                ImageUrl = originalPost.ImageUrl, // Se mantiene la misma imagen
+                User = user, // Usuario que comparte
+                OriginalPost = originalPost, // Referencia a la publicación original
+                publishingStatus = PublishingStatus.Published,
+                DateTime = DateTime.UtcNow
+            };
+
+            await postDAO.Save(sharedPost);
 
             return Ok(new
             {
-                User = new
-                {
-                    user.Id,
-                    user.Name,
-                    user.Mail
-                },
-                Posts = userPosts
+                success = true,
+                message = "Publicación compartida con éxito.",
+                sharedPostId = sharedPost.Id
             });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al obtener las publicaciones del usuario.");
+            _logger.LogError(ex, "Error al compartir la publicación.");
             return StatusCode(500, new
             {
                 success = false,
-                message = "Ocurrió un error inesperado al obtener las publicaciones del usuario.",
+                message = "Ocurrió un error inesperado al compartir la publicación.",
                 error = ex.Message
             });
         }
     }
 
-
-
-
-
-
-
-
-
-    }
+  }
 
 }

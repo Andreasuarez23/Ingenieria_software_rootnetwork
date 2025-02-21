@@ -22,5 +22,7 @@ public class Publishing
 
     public string? ImageUrl { get; set; } = "";
 
+    public Publishing? OriginalPost { get; set; } // Referencia a la publicación original
+    public int? OriginalPostId { get; set; } 
 
 }
