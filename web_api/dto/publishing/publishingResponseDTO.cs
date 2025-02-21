@@ -14,4 +14,8 @@ public class PublishingResponseDTO : ResponsetDTO
 
     public string? UserName { get; set; } // Nombre del usuario que creó el post
 
+    public bool IsShared { get; set; } // Indica si la publicación es compartida
+
+    public OriginalPostDTO? OriginalPost { get; set; }
+
 }

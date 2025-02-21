@@ -110,7 +110,6 @@ namespace web_api.Controllers
             }
         }
 
-
         [HttpGet("all")]
         public async Task<IActionResult> GetAllPosts(string? query, int page = 1, int pageSize = 10)
         {
@@ -136,7 +135,19 @@ namespace web_api.Controllers
                     UserName = post.User?.Name,
                     Text = post.Text,
                     ImageUrl = post.ImageUrl,
-                    PublishDate = post.DateTime
+                    PublishDate = post.DateTime,
+                    IsShared = post.OriginalPost != null, // Indica si es compartida
+
+                    OriginalPost = post.OriginalPost != null
+                        ? new OriginalPostDTO
+                        {
+                            Id = post.OriginalPost.Id,
+                            Text = post.OriginalPost.Text,
+                            ImageUrl = post.OriginalPost.ImageUrl,
+                            PublishDate = post.OriginalPost.DateTime,
+                            OriginalUserName = post.OriginalPost.User?.Name
+                        }
+                        : null
                 }).ToList();
 
                 return Ok(new
@@ -144,7 +155,7 @@ namespace web_api.Controllers
                     success = true,
                     message = "Publicaciones obtenidas con éxito.",
                     data = response,
-                    totalRecords = totalRecords // Incluye el total de registros
+                    totalRecords = totalRecords
                 });
             }
             catch (Exception ex)
@@ -158,6 +169,7 @@ namespace web_api.Controllers
                 });
             }
         }
+
         [HttpGet("GetPostsByUser/{id_user}")]
         public async Task<IActionResult> GetPostsByUser(int id_user)
         {
