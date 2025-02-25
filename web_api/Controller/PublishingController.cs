@@ -133,6 +133,7 @@ namespace web_api.Controllers
                 {
                     Id = post.Id,
                     UserName = post.User?.Name,
+                    LastName = post.User?.LastName,
                     Text = post.Text,
                     ImageUrl = post.ImageUrl,
                     PublishDate = post.DateTime,
