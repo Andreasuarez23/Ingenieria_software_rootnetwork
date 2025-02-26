@@ -216,8 +216,5 @@ public class UserController : ControllerBase
             message = "Usuario actualizado correctamente."
         });
     }
-
-
-
 }
 
