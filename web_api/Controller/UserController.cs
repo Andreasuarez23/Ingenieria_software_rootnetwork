@@ -127,34 +127,34 @@ public class UserController : ControllerBase
     }
     //por id usuario 
     [HttpGet("{id}")]
-public async Task<IActionResult> GetUserById(int id)
-{
-    if (id <= 0)
+    public async Task<IActionResult> GetUserById(int id)
     {
-        return BadRequest(new ErrorResponseDTO
+        if (id <= 0)
         {
-            success = false,
-            message = "ID inválido."
-        });
-    }
+            return BadRequest(new ErrorResponseDTO
+            {
+                success = false,
+                message = "ID inválido."
+            });
+        }
 
-    var daoUser = this.daoFactory.CreateDAOUser();
-    
-    // Intentamos obtener el usuario por ID
-    var user = await daoUser.GetById(id);
-    
-    if (user == null)
-    {
-        return NotFound(new ErrorResponseDTO
+        var daoUser = this.daoFactory.CreateDAOUser();
+        
+        // Intentamos obtener el usuario por ID
+        var user = await daoUser.GetById(id);
+        
+        if (user == null)
         {
-            success = false,
-            message = "Usuario no encontrado."
-        });
-    }
+            return NotFound(new ErrorResponseDTO
+            {
+                success = false,
+                message = "Usuario no encontrado."
+            });
+        }
 
-    // Devuelve el usuario si se encuentra
-    return Ok(user);
-}
+        // Devuelve el usuario si se encuentra
+        return Ok(user);
+    }
 
 
     [HttpDelete("{id}", Name = "DeleteUser")]
@@ -196,43 +196,43 @@ public async Task<IActionResult> GetUserById(int id)
 }
     //lore up por id para react 
     [HttpPut("{id}")]
-public async Task<IActionResult> UpdateUser(int id, [FromBody] UserPutRequestDTO userPutRequestDTO)
-{
-    if (id != userPutRequestDTO.Id)
+    public async Task<IActionResult> UpdateUser(int id, [FromBody] UserPutRequestDTO userPutRequestDTO)
     {
-        return BadRequest(new { success = false, message = "El ID no coincide." });
+        if (id != userPutRequestDTO.Id)
+        {
+            return BadRequest(new { success = false, message = "El ID no coincide." });
+        }
+
+        // Verificar si el usuario existe en la base de datos
+        var daoUser = this.daoFactory.CreateDAOUser();
+        var existingUser = await daoUser.GetById(id);
+
+        if (existingUser == null)
+        {
+            return NotFound(new { success = false, message = "El usuario no existe." });
+        }
+
+        // Actualizar los campos del usuario solo si se proporcionan valores nuevos
+        if (!string.IsNullOrEmpty(userPutRequestDTO.Name))
+            existingUser.Name = userPutRequestDTO.Name;
+
+        if (!string.IsNullOrEmpty(userPutRequestDTO.LastName))
+            existingUser.LastName = userPutRequestDTO.LastName;
+
+        if (!string.IsNullOrEmpty(userPutRequestDTO.Mail))
+            existingUser.Mail = userPutRequestDTO.Mail;
+
+        if (userPutRequestDTO.Birthdate.HasValue)
+            existingUser.Birthdate = userPutRequestDTO.Birthdate.Value;
+
+        if (!string.IsNullOrEmpty(userPutRequestDTO.Password))
+            existingUser.Password = userPutRequestDTO.Password;
+
+        // Guardar los cambios en la base de datos
+        await daoUser.Save(existingUser);
+
+        return Ok(new { success = true, message = "Usuario actualizado correctamente." });
     }
-
-    // Verificar si el usuario existe en la base de datos
-    var daoUser = this.daoFactory.CreateDAOUser();
-    var existingUser = await daoUser.GetById(id);
-
-    if (existingUser == null)
-    {
-        return NotFound(new { success = false, message = "El usuario no existe." });
-    }
-
-    // Actualizar los campos del usuario solo si se proporcionan valores nuevos
-    if (!string.IsNullOrEmpty(userPutRequestDTO.Name))
-        existingUser.Name = userPutRequestDTO.Name;
-
-    if (!string.IsNullOrEmpty(userPutRequestDTO.LastName))
-        existingUser.LastName = userPutRequestDTO.LastName;
-
-    if (!string.IsNullOrEmpty(userPutRequestDTO.Mail))
-        existingUser.Mail = userPutRequestDTO.Mail;
-
-    if (userPutRequestDTO.Birthdate.HasValue)
-        existingUser.Birthdate = userPutRequestDTO.Birthdate.Value;
-
-    if (!string.IsNullOrEmpty(userPutRequestDTO.Password))
-        existingUser.Password = userPutRequestDTO.Password;
-
-    // Guardar los cambios en la base de datos
-    await daoUser.Save(existingUser);
-
-    return Ok(new { success = true, message = "Usuario actualizado correctamente." });
-}
 // fin put react
 
     [HttpPut(Name = "UpdateUser")]
