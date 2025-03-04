@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using dao_library.Interfaces;
 using dao_library.Interfaces.login;
 using entities_library.login;
@@ -8,6 +9,7 @@ namespace web_api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+
 public class UserBanController : ControllerBase
 {
     private readonly ILogger<UserBanController> _logger;
@@ -137,6 +139,7 @@ public class UserBanController : ControllerBase
         }
     }
 
+   
     // Desbloquear un usuario baneado
     [HttpPut("unlock/{id}")]
     public async Task<IActionResult> Unlock(long id)
@@ -162,3 +165,5 @@ public class UserBanController : ControllerBase
         }
     }
 }
+
+   
