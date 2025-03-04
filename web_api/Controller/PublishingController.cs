@@ -186,18 +186,22 @@ namespace web_api.Controllers
                     return NotFound("Usuario no encontrado.");
                 }
 
-                // Obtener todas las publicaciones (incluyendo las compartidas)
-                var (posts, totalRecords) = await postDAO.GetAll(null, 1, 10);
+                // Obtener todas las publicaciones
+                var (posts, totalRecords) = await postDAO.GetAll(null, 1, 100); // Ajustar paginación si es necesario
 
                 var userPosts = posts
-                    .Where(p => p.User != null && p.User.Id == id_user) // Filtrar solo las publicaciones del usuario
+                    .Where(p => 
+                        p.User.Id == id_user || // Publicaciones creadas por el usuario
+                        (p.OriginalPost != null && p.User.Id == id_user) // Publicaciones compartidas por el usuario
+                    )
                     .Select(p => new 
                     {
                         p.Id,
                         p.Text,
                         p.ImageUrl,
                         p.DateTime,
-                        IsShared = p.OriginalPost != null, // Indica si es una publicación compartida
+                        IsShared = p.OriginalPost != null, // Indica si es compartida
+
                         OriginalPost = p.OriginalPost != null 
                             ? new 
                             {
@@ -207,8 +211,8 @@ namespace web_api.Controllers
                                 p.OriginalPost.DateTime,
                                 OriginalUser = new 
                                 {
-                                    p.OriginalPost.User.Id,
-                                    p.OriginalPost.User.Name
+                                    p.OriginalPost.User?.Id,
+                                    p.OriginalPost.User?.Name
                                 }
                             } 
                             : null
@@ -237,6 +241,7 @@ namespace web_api.Controllers
                 });
             }
         }
+
 
 
         [HttpPost("share")]
