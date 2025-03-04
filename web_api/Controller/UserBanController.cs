@@ -9,7 +9,7 @@ namespace web_api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
+
 public class UserBanController : ControllerBase
 {
     private readonly ILogger<UserBanController> _logger;
@@ -165,3 +165,6 @@ public class UserBanController : ControllerBase
             return StatusCode(500, new { success = false, message = "Error interno del servidor." });
         }
     }
+}
+
+   
