@@ -139,25 +139,24 @@ public class UserBanController : ControllerBase
         }
     }
 
+   
+    // Desbloquear un usuario baneado
     [HttpPut("unlock/{id}")]
     public async Task<IActionResult> Unlock(long id)
     {
         try
         {
             var userBanDao = daoFactory.CreateDAOUserBan();
+            var userBan = await userBanDao.GetById(id);
 
-            // Ya no es necesario hacer GetById aquí, ya que Unlock lo hace internamente.
+            if (userBan == null)
+            {
+                return NotFound(new { success = false, message = $"No se encontró un baneo con el ID {id}" });
+            }
+
             await userBanDao.Unlock(id);
 
             return Ok(new { success = true, message = "El baneo fue desbloqueado exitosamente." });
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(new { success = false, message = ex.Message });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { success = false, message = ex.Message });
         }
         catch (Exception ex)
         {
