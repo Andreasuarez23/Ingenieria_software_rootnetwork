@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using dao_library.Interfaces;
 using dao_library.Interfaces.login;
 using entities_library.login;
@@ -8,6 +9,7 @@ namespace web_api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 public class UserBanController : ControllerBase
 {
     private readonly ILogger<UserBanController> _logger;
@@ -137,23 +139,25 @@ public class UserBanController : ControllerBase
         }
     }
 
-    // Desbloquear un usuario baneado
     [HttpPut("unlock/{id}")]
     public async Task<IActionResult> Unlock(long id)
     {
         try
         {
             var userBanDao = daoFactory.CreateDAOUserBan();
-            var userBan = await userBanDao.GetById(id);
 
-            if (userBan == null)
-            {
-                return NotFound(new { success = false, message = $"No se encontró un baneo con el ID {id}" });
-            }
-
+            // Ya no es necesario hacer GetById aquí, ya que Unlock lo hace internamente.
             await userBanDao.Unlock(id);
 
             return Ok(new { success = true, message = "El baneo fue desbloqueado exitosamente." });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { success = false, message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
         }
         catch (Exception ex)
         {
@@ -161,4 +165,3 @@ public class UserBanController : ControllerBase
             return StatusCode(500, new { success = false, message = "Error interno del servidor." });
         }
     }
-}

@@ -20,4 +20,4 @@ namespace dao_library.Interfaces
        
         IDAOReaction CreateDAOReaction();
     } 
-}/*Metodos que devuelven instancias de DAO
+}
