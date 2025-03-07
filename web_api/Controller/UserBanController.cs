@@ -146,20 +146,27 @@ public class UserBanController : ControllerBase
     {
         try
         {
+            // Crear el DAO para UserBan{}
             var userBanDao = daoFactory.CreateDAOUserBan();
+            
+            // Intentar obtener el baneo con el ID proporcionado
             var userBan = await userBanDao.GetById(id);
 
             if (userBan == null)
             {
+                // Si no se encuentra el baneo, devuelve un mensaje de error
                 return NotFound(new { success = false, message = $"No se encontró un baneo con el ID {id}" });
             }
 
+            // Desbloquear el baneo llamando al método Unlock del DAO
             await userBanDao.Unlock(id);
 
+            // Retorna un mensaje de éxito
             return Ok(new { success = true, message = "El baneo fue desbloqueado exitosamente." });
         }
         catch (Exception ex)
         {
+            // Si ocurre un error, se logea y se retorna un mensaje de error genérico
             _logger.LogError(ex, $"Error al desbloquear el baneo con ID {id}");
             return StatusCode(500, new { success = false, message = "Error interno del servidor." });
         }
