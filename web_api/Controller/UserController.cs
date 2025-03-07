@@ -111,13 +111,13 @@ public class UserController : ControllerBase
         [FromQuery] string? query,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] bool? isAdmin = null) // Nuevo parámetro opcional
+        [FromQuery] bool? isAdmin = null) 
     {
         IDAOUser daoUser = this.daoFactory.CreateDAOUser();
 
         var (users, totalRecords) = await daoUser.GetAll(query, page, pageSize);
 
-        // Filtrar por isAdmin si se proporciona
+        
         if (isAdmin.HasValue)
         {
             users = users.Where(u => u.IsAdmin == isAdmin.Value).ToList();
@@ -140,7 +140,7 @@ public class UserController : ControllerBase
 
         var daoUser = this.daoFactory.CreateDAOUser();
         
-        // Intentamos obtener el usuario por ID
+        
         var user = await daoUser.GetById(id);
         
         if (user == null)
@@ -152,7 +152,7 @@ public class UserController : ControllerBase
             });
         }
 
-        // Devuelve el usuario si se encuentra
+        
         return Ok(user);
     }
 
@@ -160,7 +160,7 @@ public class UserController : ControllerBase
     [HttpDelete("{id}", Name = "DeleteUser")]
     public async Task<IActionResult> Delete(int id)
     {
-    // Validar ID del usuario
+   
         if (id <= 0)
         {
             return BadRequest(new ErrorResponseDTO
@@ -170,11 +170,11 @@ public class UserController : ControllerBase
             });
         }
 
-        // Obtener el usuario desde la base de datos
+        
         var userDao = this.daoFactory.CreateDAOUser();
         User user = await userDao.GetById(id);
 
-        // Validar si el usuario existe
+        
         if (user == null)
         {
             return NotFound(new ErrorResponseDTO
@@ -184,17 +184,17 @@ public class UserController : ControllerBase
             });
         }
 
-        // Llamar al método Update para manejar el cambio de estado
+       
         await userDao.Update(user);
 
-    // Retornar respuesta exitosa
+    
         return Ok(new SuccessResponseDTO
         {
             Success = true,
             Message = "Usuario bloqueado exitosamente."
         });
 }
-    //lore up por id para react 
+    
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, [FromBody] UserPutRequestDTO userPutRequestDTO)
     {
@@ -203,7 +203,7 @@ public class UserController : ControllerBase
             return BadRequest(new { success = false, message = "El ID no coincide." });
         }
 
-        // Verificar si el usuario existe en la base de datos
+       
         var daoUser = this.daoFactory.CreateDAOUser();
         var existingUser = await daoUser.GetById(id);
 
@@ -212,7 +212,6 @@ public class UserController : ControllerBase
             return NotFound(new { success = false, message = "El usuario no existe." });
         }
 
-        // Actualizar los campos del usuario solo si se proporcionan valores nuevos
         if (!string.IsNullOrEmpty(userPutRequestDTO.Name))
             existingUser.Name = userPutRequestDTO.Name;
 
@@ -228,12 +227,12 @@ public class UserController : ControllerBase
         if (!string.IsNullOrEmpty(userPutRequestDTO.Password))
             existingUser.Password = userPutRequestDTO.Password;
 
-        // Guardar los cambios en la base de datos
+        
         await daoUser.Save(existingUser);
 
         return Ok(new { success = true, message = "Usuario actualizado correctamente." });
     }
-// fin put react
+
 
     [HttpPut(Name = "UpdateUser")]
     public async Task<IActionResult> Put(UserPutRequestDTO userPutRequestDTO)
@@ -260,7 +259,7 @@ public class UserController : ControllerBase
             });
         }
 
-        // Actualiza los campos solo si se proporcionan
+        /
         if (!string.IsNullOrEmpty(userPutRequestDTO.Name))
             existingUser.Name = userPutRequestDTO.Name;
 
@@ -276,7 +275,7 @@ public class UserController : ControllerBase
         if (!string.IsNullOrEmpty(userPutRequestDTO.Password))
             existingUser.Password = userPutRequestDTO.Password;
 
-        // Guarda los cambios
+       
         await daoUser.Save(existingUser);
 
         return Ok(new
