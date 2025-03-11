@@ -8,3 +8,4 @@ public class UserBanRequestDTO : RequestDTO
     public DateTime? EndDateTime { get; set; }
     public string? Reason { get; set; }
 }
+
