@@ -15,4 +15,6 @@ public interface IDAOUserBan
     Task Update(UserBan userBan);
 
     Task Delete(UserBan userBan);
+
+    Task<UserBan?> GetActiveBanByUserId(long userId);
 }

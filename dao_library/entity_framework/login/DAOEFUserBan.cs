@@ -15,12 +15,15 @@ public class DAOEFUserBan : IDAOUserBan
 
     public async Task<(IEnumerable<UserBan>, int)> GetAll(string? query = null, int page = 1, int pageSize = 10)
     {
-        IQueryable<UserBan> userBansQuery = context.UserBans.Include(ub => ub.User);
+        // Filtrar los baneos activos (sin fecha de finalización o con fecha de finalización futura)
+        IQueryable<UserBan> userBansQuery = context.UserBans
+            .Include(ub => ub.User)
+            .Where(userBan => userBan.EndDateTime == null || userBan.EndDateTime > DateTime.UtcNow); // Filtrar baneos activos
 
         if (!string.IsNullOrEmpty(query))
         {
-            userBansQuery = userBansQuery.Where(ub =>
-                ub.User.Name.Contains(query) || ub.Reason.Contains(query));
+            userBansQuery = userBansQuery.Where(userBan =>
+                userBan.User.Name.Contains(query) || userBan.Reason.Contains(query));
         }
 
         int totalRecords = await userBansQuery.CountAsync();
@@ -32,6 +35,7 @@ public class DAOEFUserBan : IDAOUserBan
 
         return (userBans, totalRecords);
     }
+
 
     public async Task<UserBan> GetById(long id)
     {
@@ -85,5 +89,13 @@ public class DAOEFUserBan : IDAOUserBan
         context.UserBans.Remove(userBan); // Eliminar el baneo de la base de datos
         await context.SaveChangesAsync();
     }
+
+    public async Task<UserBan?> GetActiveBanByUserId(long userId)
+    {
+        return await context.UserBans
+            .Where(userBan => userBan.User.Id == userId && (userBan.EndDateTime == null || userBan.EndDateTime > DateTime.UtcNow))
+            .FirstOrDefaultAsync();
+    }
+
 
 }
