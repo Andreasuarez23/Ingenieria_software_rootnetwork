@@ -24,38 +24,50 @@ namespace web_api.Controllers
         }
 
         [HttpPost(Name = "Login")]
+        
         public async Task<IActionResult> Post(LoginRequestDTO loginRequestDTO)
         {
             IDAOUser daoUser = daoFactory.CreateDAOUser();
+            IDAOUserBan daoUserBan = daoFactory.CreateDAOUserBan();
 
-            var user = await daoUser.Get(
-                loginRequestDTO.mail,
-                loginRequestDTO.password
-            );
+            // Obtener usuario por email y password
+            var user = await daoUser.Get(loginRequestDTO.mail, loginRequestDTO.password);
 
-            if (user != null && 
-                user.IsPassword(loginRequestDTO.password))
+            if (user == null || !user.IsPassword(loginRequestDTO.password))
             {
-                return Ok(new LoginResponseDTO
+                return Unauthorized(new ErrorResponseDTO
                 {
-                    success = true,
-                    message = "", 
-                    id = user.Id,
-                    name = user.Name,
-                    lastName = user.LastName,
-                    description = user.Description,
-                    urlAvatar = "",
-                    mail = user.Mail,
-                    isAdmin = user.IsAdmin // Agregamos isAdmin aquí
+                    success = false,
+                    message = "Incorrect email or password."
                 });
             }
 
-            return Unauthorized(new ErrorResponseDTO
+            // Verificar si el usuario está baneado
+            var userBan = await daoUserBan.GetActiveBanByUserId(user.Id);
+            if (userBan != null)
             {
-                success = false,
-                message = "Invalido mail o contrasña"
+                return Unauthorized(new ErrorResponseDTO
+                {
+                    success = false,
+                    message = $"Your account has been banned. Reason: {userBan.Reason}. End of ban: {userBan.EndDateTime?.ToString("yyyy-MM-dd HH:mm") ?? "Permanent"}"
+                });
+            }
+
+            // Si no está baneado, proceder con el login
+            return Ok(new LoginResponseDTO
+            {
+                success = true,
+                message = "", 
+                id = user.Id,
+                name = user.Name,
+                lastName = user.LastName,
+                description = user.Description,
+                urlAvatar = "",
+                mail = user.Mail,
+                isAdmin = user.IsAdmin
             });
         }
+
     }
 }
 
