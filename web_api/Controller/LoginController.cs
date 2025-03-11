@@ -49,7 +49,7 @@ namespace web_api.Controllers
                 return Unauthorized(new ErrorResponseDTO
                 {
                     success = false,
-                    message = $"Your account has been banned. Reason: {userBan.Reason}. End of ban: {userBan.EndDateTime?.ToString("yyyy-MM-dd HH:mm") ?? "Permanent"}"
+                    message = $"Su cuenta ha sido baneada. Motivo: {userBan.Reason}. Fin de baneo: {userBan.EndDateTime?.ToString("yyyy-MM-dd HH:mm") ?? "Permanent"}"
                 });
             }
 
