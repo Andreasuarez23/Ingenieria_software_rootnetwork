@@ -12,6 +12,7 @@ public class CommentResponseDTO : ResponsetDTO
     public required string Text {get; set;}
 
     public string? UserName  {get; set;}
+    public long UserId { get; set; } 
 
     public int PublishingId {get; set;}
 

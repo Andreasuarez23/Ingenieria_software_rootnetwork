@@ -64,7 +64,9 @@ public class CommentController : ControllerBase
                 Text = commentRequestDTO.Text,
                 Date = DateTime.UtcNow,
                 PublishingId = publishing.Id,
+                UserId = user.Id,
                 User = user.Name
+
             };
 
             // Guardar el comentario
@@ -122,6 +124,7 @@ public class CommentController : ControllerBase
                 Id = comment.Id,
                 Text = comment.Text,
                 UserName = comment.User,
+                
                 //PublishingId = comment.PublishingId
             };
 
@@ -162,6 +165,7 @@ public class CommentController : ControllerBase
                 Id = comment.Id,
                 Text = comment.Text,
                 UserName = comment.User,
+                UserId = comment.UserId,
                 PublishingId = comment.PublishingId ?? 0
             }).ToList();
 

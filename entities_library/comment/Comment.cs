@@ -12,6 +12,7 @@ public class Comment
     public DateTime Date { get; set; } = DateTime.UtcNow;
 
     public int? PublishingId { get; set; }
+    public long UserId { get; set; }
 
     public string? User { get; set; }
 
